@@ -52,7 +52,7 @@ class AutoResponseView(BaseListView):
             model_field_name: self.request.GET.get(form_field_name)
             for form_field_name, model_field_name in self.widget.dependent_fields.items()
             if form_field_name in self.request.GET
-            and self.request.GET.get(form_field_name, "") != ""
+            and self.request.GET.get(form_field_name, None) is not None
         }
         return self.widget.filter_queryset(
             self.request, self.term, self.queryset, **kwargs
