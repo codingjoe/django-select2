@@ -49,7 +49,7 @@ class AutoResponseView(BaseListView):
     def get_queryset(self):
         """Get QuerySet from cached widget."""
         kwargs = {
-            model_field_name: self.request.GET.get(form_field_name)
+            model_field_name: self.request.GET.get(form_field_name) or None
             for form_field_name, model_field_name in self.widget.dependent_fields.items()
             if form_field_name in self.request.GET
             and self.request.GET.get(form_field_name, None) is not None
