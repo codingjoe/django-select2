@@ -178,7 +178,7 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
         class MyWidget(Select2TagWidget):
 
             def value_from_datadict(self, data, files, name):
-                values = super().value_from_datadict(data, files, name):
+                values = super().value_from_datadict(data, files, name)
                 return ",".join(values)
 
             def optgroups(self, name, value, attrs=None):
