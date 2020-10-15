@@ -28,7 +28,12 @@
           if (dependentFields) {
             dependentFields = dependentFields.trim().split(/\s+/)
             $.each(dependentFields, function (i, dependentField) {
-              result[dependentField] = $('[name=' + dependentField + ']', $element.closest('form')).val()
+              var tmpres = $('[name=' + dependentField + ']', $element.closest('form')).val()
+              if (!tmpres) { // If dependendent field not found, maybe it is a nested form, we try to match with ends with -name
+                result[dependentField] = $('[name$=-' + dependentField + ']', $element.closest('form')).val()
+              } else {
+                result[dependentField] = tmpres
+              }
             })
           }
 
