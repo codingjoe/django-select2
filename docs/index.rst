@@ -21,7 +21,7 @@ Add ``django_select`` to your URL root configuration:
         # … other patterns
     ]
 
-Finally make sure you have a persistent cache backend setup (NOT
+While not strictly necessary for django-select to work, for performance reasons it is highly recommended to setup a persistent cache backend (NOT
 :class:`.DummyCache` or :class:`.LocMemCache`), we will use Redis in this
 example. Make sure you have a Redis server up and running::
 
