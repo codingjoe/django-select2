@@ -56,6 +56,17 @@ class Select2Conf(AppConf):
     It has set `select2_` as a default value, which you can change if needed.
     """
 
+    DJANGO_SELECT2_JS = 'static/django_select2/django_select2.js'
+    """
+        The URI for the django_select2 JS file. By default this points to the local 'static'
+        resources.
+
+        If you provide your own JS and would not like Django-Select2 to load any, change
+        this setting to a blank string like so::
+
+            SELECT2_DJANGO_SELECT2_JS = ''
+        """
+
     JS = "https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/select2.min.js".format(
         version=LIB_VERSION
     )
