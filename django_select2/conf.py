@@ -96,8 +96,10 @@ class Select2Conf(AppConf):
         develop without an Internet connection.
     """
 
-    I18N_PATH = "https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/i18n".format(
-        version=LIB_VERSION
+    I18N_PATH = (
+        "https://cdnjs.cloudflare.com/ajax/libs/select2/{version}/js/i18n".format(
+            version=LIB_VERSION
+        )
     )
     """
     The base URI for the Select2 i18n files. By default this points to the Cloudflare CDN.

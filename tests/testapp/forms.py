@@ -111,7 +111,8 @@ class ArtistModelSelect2MultipleWidgetForm(forms.Form):
     title = forms.CharField(max_length=50)
     genres = forms.ModelMultipleChoiceField(
         widget=ModelSelect2MultipleWidget(
-            queryset=models.Genre.objects.all(), search_fields=["title__icontains"],
+            queryset=models.Genre.objects.all(),
+            search_fields=["title__icontains"],
         ),
         queryset=models.Genre.objects.all(),
         required=True,
@@ -119,7 +120,8 @@ class ArtistModelSelect2MultipleWidgetForm(forms.Form):
 
     featured_artists = forms.ModelMultipleChoiceField(
         widget=ModelSelect2MultipleWidget(
-            queryset=models.Artist.objects.all(), search_fields=["title__icontains"],
+            queryset=models.Artist.objects.all(),
+            search_fields=["title__icontains"],
         ),
         queryset=models.Artist.objects.all(),
         required=False,
