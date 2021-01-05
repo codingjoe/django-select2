@@ -46,8 +46,8 @@ in their names.
     :parts: 1
 
 """
+import re
 import uuid
-from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
 
@@ -315,6 +315,8 @@ class HeavySelect2TagWidget(HeavySelect2Mixin, Select2TagWidget):
 class ModelSelect2Mixin:
     """Widget mixin that provides attributes and methods for :class:`.AutoResponseView`."""
 
+    _word_split_pattern = re.compile(r"\t|\n| ")
+
     model = None
     queryset = None
     search_fields = []
@@ -397,14 +399,15 @@ class ModelSelect2Mixin:
             queryset = self.get_queryset()
         search_fields = self.get_search_fields()
         select = Q()
-        term = term.replace("\t", " ")
-        term = term.replace("\n", " ")
-        for t in [t for t in term.split(" ") if not t == ""]:
-            select &= reduce(
-                lambda x, y: x | Q(**{y: t}),
-                search_fields[1:],
-                Q(**{search_fields[0]: t}),
-            )
+
+        for field in search_fields:
+            field_select = Q(**{field: term})
+            if "contains" in field:
+                for word in filter(None, self._word_split_pattern.split(term)):
+                    field_select |= Q(**{field: word})
+
+            select |= field_select
+
         if dependent_fields:
             select &= Q(**dependent_fields)
 

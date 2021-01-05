@@ -446,6 +446,52 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         )
         assert qs.exists()
 
+    def test_filter_queryset__startswith(self, genres):
+        genre = Genre.objects.create(title="Space Genre")
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(None, genre.title).exists()
+
+        widget = TitleModelSelect2Widget(
+            search_fields=["title__istartswith"], queryset=Genre.objects.all()
+        )
+        qs = widget.filter_queryset(None, "Space Gen")
+        assert qs.exists()
+
+        qs = widget.filter_queryset(None, "Gen")
+        assert not qs.exists()
+
+    def test_filter_queryset__contains(self, genres):
+        genre = Genre.objects.create(title="Space Genre")
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(None, genre.title).exists()
+
+        widget = TitleModelSelect2Widget(
+            search_fields=["title__contains"], queryset=Genre.objects.all()
+        )
+        qs = widget.filter_queryset(None, "Space Gen")
+        assert qs.exists()
+
+        qs = widget.filter_queryset(None, "NOT Gen")
+        assert qs.exists(), "contains works even if only one part matches"
+
+    def test_filter_queryset__multiple_fields(self, genres):
+        genre = Genre.objects.create(title="Space Genre")
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(None, genre.title).exists()
+
+        widget = TitleModelSelect2Widget(
+            search_fields=[
+                "title__startswith",
+                "title__endswith",
+            ],
+            queryset=Genre.objects.all(),
+        )
+        qs = widget.filter_queryset(None, "Space")
+        assert qs.exists()
+
+        qs = widget.filter_queryset(None, "Genre")
+        assert qs.exists()
+
     def test_model_kwarg(self):
         widget = ModelSelect2Widget(model=Genre, search_fields=["title__icontains"])
         genre = Genre.objects.last()
