@@ -446,6 +446,16 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         )
         assert qs.exists()
 
+    def test_filter_queryset__empty(self, genres):
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(None, genres[0].title[:3]).exists()
+
+        widget = TitleModelSelect2Widget(
+            search_fields=["title__icontains"], queryset=Genre.objects.all()
+        )
+        qs = widget.filter_queryset(None, "")
+        assert qs.exists()
+
     def test_filter_queryset__startswith(self, genres):
         genre = Genre.objects.create(title="Space Genre")
         widget = TitleModelSelect2Widget(queryset=Genre.objects.all())

@@ -400,13 +400,14 @@ class ModelSelect2Mixin:
         search_fields = self.get_search_fields()
         select = Q()
 
-        for field in search_fields:
-            field_select = Q(**{field: term})
-            if "contains" in field:
-                for word in filter(None, self._word_split_pattern.split(term)):
-                    field_select |= Q(**{field: word})
+        if term != "":
+            for field in search_fields:
+                field_select = Q(**{field: term})
+                if "contains" in field:
+                    for word in filter(None, self._word_split_pattern.split(term)):
+                        field_select |= Q(**{field: word})
 
-            select |= field_select
+                select |= field_select
 
         if dependent_fields:
             select &= Q(**dependent_fields)
