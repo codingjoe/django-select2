@@ -54,7 +54,7 @@ from pickle import PicklingError  # nosec
 from django import forms
 from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 from django.core import signing
-from django.db.models import Q
+from django.db.models import AutoField, BigAutoField, Q
 from django.forms.models import ModelChoiceIterator
 from django.urls import reverse
 from django.utils.translation import get_language
@@ -449,6 +449,7 @@ class ModelSelect2Mixin:
         default = (None, [], 0)
         groups = [default]
         has_selected = False
+
         selected_choices = {str(v) for v in value}
         if not self.is_required and not self.allow_multiple_selected:
             default[1].append(self.create_option(name, "", "", False, 0))
@@ -457,7 +458,11 @@ class ModelSelect2Mixin:
         selected_choices = {
             c for c in selected_choices if c not in self.choices.field.empty_values
         }
-        field_name = self.choices.field.to_field_name or "pk"
+        field_name = self.choices.field.to_field_name or "id"
+        field = self.choices.queryset.model._meta.get_field(field_name)
+        if isinstance(field, (AutoField, BigAutoField)):
+            selected_choices = {c for c in selected_choices if c.isdigit()}
+
         query = Q(**{"%s__in" % field_name: selected_choices})
         for obj in self.choices.queryset.filter(query):
             option_value = self.choices.choice(obj)[0]

@@ -331,6 +331,11 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
     def genres(self, genres):
         return genres
 
+    def test_invalid_value(self, genres):
+        genre = genres[0]
+        field = self.form.fields["primary_genre"]
+        field.widget.render("primary_genre", f"{genre.pk}'[0]")
+
     def test_selected_option(self, db, genres):
         genre = genres[0]
         genre2 = genres[1]
