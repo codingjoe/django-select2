@@ -21,7 +21,7 @@ def random_name(n):
     return "-".join([x.capitalize() for x in words])
 
 
-@pytest.yield_fixture(scope="session")
+@pytest.fixture(scope="session")
 def driver():
     chrome_options = webdriver.ChromeOptions()
     chrome_options.headless = True
