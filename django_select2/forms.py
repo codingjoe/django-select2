@@ -46,12 +46,14 @@ in their names.
     :parts: 1
 
 """
-import re
+import operator
 import uuid
+from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
 
 from django import forms
+from django.contrib.admin.utils import lookup_needs_distinct
 from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 from django.core import signing
 from django.db.models import Q
@@ -315,8 +317,6 @@ class HeavySelect2TagWidget(HeavySelect2Mixin, Select2TagWidget):
 class ModelSelect2Mixin:
     """Widget mixin that provides attributes and methods for :class:`.AutoResponseView`."""
 
-    _word_split_pattern = re.compile(r"\t|\n| ")
-
     model = None
     queryset = None
     search_fields = []
@@ -400,19 +400,24 @@ class ModelSelect2Mixin:
         search_fields = self.get_search_fields()
         select = Q()
 
-        if term != "":
-            for field in search_fields:
-                field_select = Q(**{field: term})
-                if "contains" in field:
-                    for word in filter(None, self._word_split_pattern.split(term)):
-                        field_select |= Q(**{field: word})
-
-                select |= field_select
+        use_distinct = False
+        if search_fields and term:
+            for bit in term.split():
+                or_queries = [Q(**{orm_lookup: bit}) for orm_lookup in search_fields]
+                select &= reduce(operator.or_, or_queries)
+            or_queries = [Q(**{orm_lookup: term}) for orm_lookup in search_fields]
+            select |= reduce(operator.or_, or_queries)
+            use_distinct |= any(
+                lookup_needs_distinct(queryset.model._meta, search_spec)
+                for search_spec in search_fields
+            )
 
         if dependent_fields:
             select &= Q(**dependent_fields)
 
-        return queryset.filter(select).distinct()
+        if use_distinct:
+            queryset.filter(select).distinct()
+        return queryset.filter(select)
 
     def get_queryset(self):
         """

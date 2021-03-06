@@ -482,7 +482,7 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         assert qs.exists()
 
         qs = widget.filter_queryset(None, "NOT Gen")
-        assert qs.exists(), "contains works even if only one part matches"
+        assert not qs.exists(), "contains works even if all bits match"
 
     def test_filter_queryset__multiple_fields(self, genres):
         genre = Genre.objects.create(title="Space Genre")
