@@ -121,7 +121,7 @@ class Select2Mixin:
 
         return forms.Media(
             js=select2_js + i18n_file + ("django_select2/django_select2.js",),
-            css={"screen": select2_css},
+            css={"screen": select2_css + ("django_select2/django_select2.css",)},
         )
 
     media = property(_get_media)
