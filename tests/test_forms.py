@@ -200,7 +200,7 @@ class TestSelect2MixinSettings:
         settings.SELECT2_CSS = ""
         sut = Select2Widget()
         result = sut.media.render()
-        assert ".css" not in result
+        assert "/select2.css" not in result
 
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):

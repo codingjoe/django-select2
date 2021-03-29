@@ -51,11 +51,20 @@ class AutoResponseView(BaseListView):
         kwargs = {
             model_field_name: self.request.GET.get(form_field_name)
             for form_field_name, model_field_name in self.widget.dependent_fields.items()
-            if form_field_name in self.request.GET
-            and self.request.GET.get(form_field_name, "") != ""
         }
+        kwargs.update(
+            {
+                f"{model_field_name}__in": filter(
+                    None, self.request.GET.get(f"{form_field_name}[]", "").split(",")
+                )
+                for form_field_name, model_field_name in self.widget.dependent_fields.items()
+            }
+        )
         return self.widget.filter_queryset(
-            self.request, self.term, self.queryset, **kwargs
+            self.request,
+            self.term,
+            self.queryset,
+            **{k: v for k, v in kwargs.items() if v},
         )
 
     def get_paginate_by(self, queryset):
