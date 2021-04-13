@@ -415,8 +415,13 @@ class ModelSelect2Mixin:
         if dependent_fields:
             select &= Q(**dependent_fields)
 
+        use_distinct |= any(
+            lookup_needs_distinct(queryset.model._meta, search_spec)
+            for search_spec in dependent_fields.keys()
+        )
+
         if use_distinct:
-            queryset.filter(select).distinct()
+            return queryset.filter(select).distinct()
         return queryset.filter(select)
 
     def get_queryset(self):
