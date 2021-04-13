@@ -54,8 +54,8 @@ class AutoResponseView(BaseListView):
         }
         kwargs.update(
             {
-                f"{model_field_name}__in": filter(
-                    None, self.request.GET.get(f"{form_field_name}[]", "").split(",")
+                f"{model_field_name}__in": self.request.GET.getlist(
+                    f"{form_field_name}[]", []
                 )
                 for form_field_name, model_field_name in self.widget.dependent_fields.items()
             }
