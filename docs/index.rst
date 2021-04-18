@@ -21,18 +21,10 @@ Add ``django_select`` to your URL root configuration:
         # … other patterns
     ]
 
-Django-select2 requires a persistent cache backend. 
-**This means that the :class:`.DummyCache` backend will not work!**
 
-The following backends are supported, under the assumption that they are 
-correctly configured:
+``django-select2`` **requires** a persistent cache backend. 
 
-* :class:`.DatabasCache`
-* :class:`.PyMemcacheCache`
-* :class:`.PyLibMCCache`
-* :class:`.FileBasedCache`
-* :class:`.LocMemCache`
-* custom cache backends given that they are persistent
+**This means that the** :class:`.DummyCache` **backend will not work!**
 
 The default cache backend is :class:`.LocMemCache`, which is persistent
 and will work fine as long as your database can keep up with the requests.
