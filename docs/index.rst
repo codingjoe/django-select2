@@ -22,15 +22,18 @@ Add ``django_select`` to your URL root configuration:
     ]
 
 
-``django-select2`` **requires** a persistent cache backend. 
+``django-select2`` requires a cache backend which is **persistent**
+across all application servers.. 
 
 **This means that the** :class:`.DummyCache` **backend will not work!**
 
 The default cache backend is :class:`.LocMemCache`, which is persistent
-and will work fine as long as your database can keep up with the requests.
+across a single node. For projects with a single application server
+this will work fine, however you will run into issues when 
+you scale up into multiple servers.
 
-Below is an example setup using Redis for projects
-with heavier cache requirements:
+Below is an example setup using Redis, which is a solution that
+works for multi-server setups:
 
 Make sure you have a Redis server up and running::
 
