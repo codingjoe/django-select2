@@ -200,7 +200,7 @@ class TestSelect2MixinSettings:
         settings.SELECT2_CSS = ""
         sut = Select2Widget()
         result = sut.media.render()
-        assert ".css" not in result
+        assert "/select2.css" not in result
 
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):
@@ -222,26 +222,29 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
     def test_selected_option(self, db):
         not_required_field = self.form.fields["primary_genre"]
         assert not_required_field.required is False
-        assert '<option value="1" selected="selected">One</option>' in not_required_field.widget.render(
-            "primary_genre", 1
-        ) or '<option value="1" selected>One</option>' in not_required_field.widget.render(
-            "primary_genre", 1
-        ), not_required_field.widget.render(
-            "primary_genre", 1
-        )
+        assert (
+            '<option value="1" selected="selected">One</option>'
+            in not_required_field.widget.render("primary_genre", 1)
+            or '<option value="1" selected>One</option>'
+            in not_required_field.widget.render("primary_genre", 1)
+        ), (not_required_field.widget.render("primary_genre", 1))
 
     def test_many_selected_option(self, db, genres):
         field = HeavySelect2MultipleWidgetForm().fields["genres"]
         field.widget.choices = NUMBER_CHOICES
         widget_output = field.widget.render("genres", [1, 2])
-        selected_option = '<option value="{pk}" selected="selected">{value}</option>'.format(
-            pk=1, value="One"
+        selected_option = (
+            '<option value="{pk}" selected="selected">{value}</option>'.format(
+                pk=1, value="One"
+            )
         )
         selected_option_a = '<option value="{pk}" selected>{value}</option>'.format(
             pk=1, value="One"
         )
-        selected_option2 = '<option value="{pk}" selected="selected">{value}</option>'.format(
-            pk=2, value="Two"
+        selected_option2 = (
+            '<option value="{pk}" selected="selected">{value}</option>'.format(
+                pk=2, value="Two"
+            )
         )
         selected_option2a = '<option value="{pk}" selected>{value}</option>'.format(
             pk=2, value="Two"
@@ -334,8 +337,10 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         not_required_field = self.form.fields["primary_genre"]
         assert not_required_field.required is False
         widget_output = not_required_field.widget.render("primary_genre", genre.pk)
-        selected_option = '<option value="{pk}" selected="selected">{value}</option>'.format(
-            pk=genre.pk, value=force_str(genre)
+        selected_option = (
+            '<option value="{pk}" selected="selected">{value}</option>'.format(
+                pk=genre.pk, value=force_str(genre)
+            )
         )
         selected_option_a = '<option value="{pk}" selected>{value}</option>'.format(
             pk=genre.pk, value=force_str(genre)
@@ -439,6 +444,62 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         qs = widget.filter_queryset(
             None, " ".join([genres[0].title[:3], genres[0].title[3:]])
         )
+        assert qs.exists()
+
+    def test_filter_queryset__empty(self, genres):
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(None, genres[0].title[:3]).exists()
+
+        widget = TitleModelSelect2Widget(
+            search_fields=["title__icontains"], queryset=Genre.objects.all()
+        )
+        qs = widget.filter_queryset(None, "")
+        assert qs.exists()
+
+    def test_filter_queryset__startswith(self, genres):
+        genre = Genre.objects.create(title="Space Genre")
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(None, genre.title).exists()
+
+        widget = TitleModelSelect2Widget(
+            search_fields=["title__istartswith"], queryset=Genre.objects.all()
+        )
+        qs = widget.filter_queryset(None, "Space Gen")
+        assert qs.exists()
+
+        qs = widget.filter_queryset(None, "Gen")
+        assert not qs.exists()
+
+    def test_filter_queryset__contains(self, genres):
+        genre = Genre.objects.create(title="Space Genre")
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(None, genre.title).exists()
+
+        widget = TitleModelSelect2Widget(
+            search_fields=["title__contains"], queryset=Genre.objects.all()
+        )
+        qs = widget.filter_queryset(None, "Space Gen")
+        assert qs.exists()
+
+        qs = widget.filter_queryset(None, "NOT Gen")
+        assert not qs.exists(), "contains works even if all bits match"
+
+    def test_filter_queryset__multiple_fields(self, genres):
+        genre = Genre.objects.create(title="Space Genre")
+        widget = TitleModelSelect2Widget(queryset=Genre.objects.all())
+        assert widget.filter_queryset(None, genre.title).exists()
+
+        widget = TitleModelSelect2Widget(
+            search_fields=[
+                "title__startswith",
+                "title__endswith",
+            ],
+            queryset=Genre.objects.all(),
+        )
+        qs = widget.filter_queryset(None, "Space")
+        assert qs.exists()
+
+        qs = widget.filter_queryset(None, "Genre")
         assert qs.exists()
 
     def test_model_kwarg(self):

@@ -7,14 +7,6 @@ on:
 
 jobs:
 
-  black:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-python@v2
-      - uses: actions/checkout@v2
-      - run: python -m pip install black
-      - run: black --check --diff .
-
   dist:
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2.1.5
         with:
           node-version: '12.x'
       - run: npm install -g standard
@@ -38,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-python@v2
+      - run: python -m pip install -U setuptools wheel
       - uses: actions/checkout@v2
       - run: sudo apt-get install -y gettext graphviz
       - run: python setup.py develop
@@ -46,16 +39,16 @@ jobs:
   pytest:
     needs:
       - standardjs
-      - black
     strategy:
       matrix:
         python-version:
-          - "3.6"
           - "3.7"
           - "3.8"
+          - "3.9"
         django-version:
           - "2.2"
-          - "3.0"
+          - "3.1"
+          - "3.2"
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python ${{ matrix.python-version }}
@@ -67,7 +60,7 @@ jobs:
       - name: Install Selenium
         run: |
           mkdir bin
-          curl -O https://chromedriver.storage.googleapis.com/77.0.3865.40/chromedriver_linux64.zip
+          curl -O https://chromedriver.storage.googleapis.com/`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip -d bin
       - uses: actions/checkout@v1
       - name: Install dependencies

@@ -46,12 +46,14 @@ in their names.
     :parts: 1
 
 """
+import operator
 import uuid
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
 
 from django import forms
+from django.contrib.admin.utils import lookup_needs_distinct
 from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 from django.core import signing
 from django.db.models import Q
@@ -119,7 +121,7 @@ class Select2Mixin:
 
         return forms.Media(
             js=select2_js + i18n_file + ("django_select2/django_select2.js",),
-            css={"screen": select2_css},
+            css={"screen": select2_css + ("django_select2/django_select2.css",)},
         )
 
     media = property(_get_media)
@@ -178,7 +180,7 @@ class Select2TagWidget(Select2TagMixin, Select2Mixin, forms.SelectMultiple):
         class MyWidget(Select2TagWidget):
 
             def value_from_datadict(self, data, files, name):
-                values = super().value_from_datadict(data, files, name):
+                values = super().value_from_datadict(data, files, name)
                 return ",".join(values)
 
             def optgroups(self, name, value, attrs=None):
@@ -397,18 +399,30 @@ class ModelSelect2Mixin:
             queryset = self.get_queryset()
         search_fields = self.get_search_fields()
         select = Q()
-        term = term.replace("\t", " ")
-        term = term.replace("\n", " ")
-        for t in [t for t in term.split(" ") if not t == ""]:
-            select &= reduce(
-                lambda x, y: x | Q(**{y: t}),
-                search_fields[1:],
-                Q(**{search_fields[0]: t}),
+
+        use_distinct = False
+        if search_fields and term:
+            for bit in term.split():
+                or_queries = [Q(**{orm_lookup: bit}) for orm_lookup in search_fields]
+                select &= reduce(operator.or_, or_queries)
+            or_queries = [Q(**{orm_lookup: term}) for orm_lookup in search_fields]
+            select |= reduce(operator.or_, or_queries)
+            use_distinct |= any(
+                lookup_needs_distinct(queryset.model._meta, search_spec)
+                for search_spec in search_fields
             )
+
         if dependent_fields:
             select &= Q(**dependent_fields)
 
-        return queryset.filter(select).distinct()
+        use_distinct |= any(
+            lookup_needs_distinct(queryset.model._meta, search_spec)
+            for search_spec in dependent_fields.keys()
+        )
+
+        if use_distinct:
+            return queryset.filter(select).distinct()
+        return queryset.filter(select)
 
     def get_queryset(self):
         """

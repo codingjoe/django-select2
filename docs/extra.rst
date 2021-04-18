@@ -27,10 +27,11 @@ Here are our two models:
 Customizing a Form
 ``````````````````
 
-Lets link two widgets via *dependent_fields*.
+Lets link two widgets via a *dependent_fields* dictionary. The key represents the name of 
+the field in the form. The value represents the name of the field in the model (used in `queryset`).
 
 .. code-block:: python
-    :emphasize-lines: 15
+    :emphasize-lines: 17
 
     class AddressForm(forms.Form):
         country = forms.ModelChoiceField(

@@ -1,7 +1,6 @@
 *.pyc
 
-Django_Select2.egg-info
-Django_Select2_Py3.egg-info
+*.egg-info
 dist
 build
 
