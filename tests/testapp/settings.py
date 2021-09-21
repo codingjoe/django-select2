@@ -25,6 +25,7 @@ LANGUAGES = [
     ("de", "German"),
     ("en", "English"),
 ]
+LANGUAGE_CODE = "en"
 
 TEMPLATES = [
     {
