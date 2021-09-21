@@ -76,9 +76,16 @@ class Select2Mixin:
 
     empty_label = ""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.i18n_name = SELECT2_TRANSLATIONS.get(get_language())
+
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
-        default_attrs = {"data-minimum-input-length": 0}
+        default_attrs = {
+            "lang": self.i18n_name,
+            "data-minimum-input-length": 0,
+        }
         if self.is_required:
             default_attrs["data-allow-clear"] = "false"
         else:
@@ -100,31 +107,27 @@ class Select2Mixin:
             self.choices = list(chain([("", "")], self.choices))
         return super().optgroups(name, value, attrs=attrs)
 
-    def _get_media(self):
+    @property
+    def media(self):
         """
         Construct Media as a dynamic property.
 
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/stable/topics/forms/media/#media-as-a-dynamic-property
         """
-        lang = get_language()
         select2_js = (settings.SELECT2_JS,) if settings.SELECT2_JS else ()
         select2_css = (settings.SELECT2_CSS,) if settings.SELECT2_CSS else ()
 
-        i18n_name = SELECT2_TRANSLATIONS.get(lang)
-        if i18n_name not in settings.SELECT2_I18N_AVAILABLE_LANGUAGES:
-            i18n_name = None
-
-        i18n_file = (
-            ("%s/%s.js" % (settings.SELECT2_I18N_PATH, i18n_name),) if i18n_name else ()
-        )
+        i18n_file = ()
+        if self.i18n_name in settings.SELECT2_I18N_AVAILABLE_LANGUAGES:
+            i18n_file = (
+                ("%s/%s.js" % (settings.SELECT2_I18N_PATH, self.i18n_name),)
+            )
 
         return forms.Media(
             js=select2_js + i18n_file + ("django_select2/django_select2.js",),
             css={"screen": select2_css + ("django_select2/django_select2.css",)},
         )
-
-    media = property(_get_media)
 
 
 class Select2TagMixin:
@@ -212,11 +215,7 @@ class HeavySelect2Mixin:
                 Value is a name of a field in a model (used in `queryset`).
 
         """
-        self.choices = choices
-        if attrs is not None:
-            self.attrs = attrs.copy()
-        else:
-            self.attrs = {}
+        super().__init__(attrs, choices)
 
         self.uuid = str(uuid.uuid4())
         self.field_id = signing.dumps(self.uuid)

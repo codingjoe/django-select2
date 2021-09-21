@@ -3,6 +3,7 @@ import os
 from collections.abc import Iterable
 
 import pytest
+from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils import translation
@@ -45,6 +46,12 @@ class TestSelect2Mixin:
         widget = self.widget_cls(attrs={"class": "my-class"})
         assert "my-class" in widget.render("name", None)
         assert "django-select2" in widget.render("name", None)
+
+    @pytest.mark.parametrize("code,name", SELECT2_TRANSLATIONS.items())
+    def test_lang_attr(self, code, name):
+        translation.activate(code)
+        widget = self.widget_cls()
+        assert f'lang="{name}"' in widget.render("name", None)
 
     def test_allow_clear(self, db):
         required_field = self.form.fields["artist"]
@@ -218,6 +225,12 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         assert "django-select2-heavy" in widget.render("name", None), widget.render(
             "name", None
         )
+
+    @pytest.mark.parametrize("code,name", SELECT2_TRANSLATIONS.items())
+    def test_lang_attr(self, code, name):
+        translation.activate(code)
+        widget = self.widget_cls(data_view="heavy_data_1")
+        assert f'lang="{name}"' in widget.render("name", None)
 
     def test_selected_option(self, db):
         not_required_field = self.form.fields["primary_genre"]
