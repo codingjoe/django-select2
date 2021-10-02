@@ -52,8 +52,8 @@ from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
 
+import django
 from django import forms
-from django.contrib.admin.utils import lookup_needs_distinct
 from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 from django.core import signing
 from django.db.models import Q
@@ -63,6 +63,11 @@ from django.utils.translation import get_language
 
 from .cache import cache
 from .conf import settings
+
+if django.VERSION < (4, 0):
+    from django.contrib.admin.utils import lookup_needs_distinct as lookup_spawns_duplicates
+else:
+    from django.contrib.admin.utils import lookup_spawns_duplicates
 
 
 class Select2Mixin:
@@ -407,7 +412,7 @@ class ModelSelect2Mixin:
             or_queries = [Q(**{orm_lookup: term}) for orm_lookup in search_fields]
             select |= reduce(operator.or_, or_queries)
             use_distinct |= any(
-                lookup_needs_distinct(queryset.model._meta, search_spec)
+                lookup_spawns_duplicates(queryset.model._meta, search_spec)
                 for search_spec in search_fields
             )
 
@@ -415,7 +420,7 @@ class ModelSelect2Mixin:
             select &= Q(**dependent_fields)
 
         use_distinct |= any(
-            lookup_needs_distinct(queryset.model._meta, search_spec)
+            lookup_spawns_duplicates(queryset.model._meta, search_spec)
             for search_spec in dependent_fields.keys()
         )
 
