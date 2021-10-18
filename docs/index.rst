@@ -64,6 +64,12 @@ Next, add the cache configuration to your ``settings.py`` as follows:
     # Tell select2 which cache configuration to use:
     SELECT2_CACHE_BACKEND = "select2"
 
+.. note::
+    A custom timeout for your cache backend, will serve as an indirect session limit.
+    Auto select fields will stop working after, once the cache has expired.
+    It's recommended to use a dedicated cache database with an adequate
+    cache replacement policy such as LRU, FILO, etc.
+
 
 External Dependencies
 ---------------------
