@@ -90,6 +90,7 @@ class Select2Mixin:
         default_attrs = {
             "lang": self.i18n_name,
             "data-minimum-input-length": 0,
+            "data-theme": settings.SELECT2_THEME,
         }
         if self.is_required:
             default_attrs["data-allow-clear"] = "false"
@@ -120,18 +121,19 @@ class Select2Mixin:
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/stable/topics/forms/media/#media-as-a-dynamic-property
         """
-        select2_js = (settings.SELECT2_JS,) if settings.SELECT2_JS else ()
-        select2_css = (settings.SELECT2_CSS,) if settings.SELECT2_CSS else ()
+        select2_js = [settings.SELECT2_JS] if settings.SELECT2_JS else []
+        select2_css = settings.SELECT2_CSS if settings.SELECT2_CSS else []
 
-        i18n_file = ()
+        if isinstance(select2_css, str):
+            select2_css = [select2_css]
+
+        i18n_file = []
         if self.i18n_name in settings.SELECT2_I18N_AVAILABLE_LANGUAGES:
-            i18n_file = (
-                ("%s/%s.js" % (settings.SELECT2_I18N_PATH, self.i18n_name),)
-            )
+            i18n_file = [f"{settings.SELECT2_I18N_PATH}/{self.i18n_name}.js"]
 
         return forms.Media(
-            js=select2_js + i18n_file + ("django_select2/django_select2.js",),
-            css={"screen": select2_css + ("django_select2/django_select2.css",)},
+            js=select2_js + i18n_file + ["django_select2/django_select2.js"],
+            css={"screen": select2_css + ["django_select2/django_select2.css"]},
         )
 
 

@@ -87,6 +87,14 @@ class Select2Conf(AppConf):
 
         SELECT2_CSS = 'assets/css/select2.css'
 
+    If you want to add more css (usually used in select2 themes), add a line
+    in settings.py like this::
+
+        SELECT2_CSS = [
+            'assets/css/select2.css',
+            'assets/css/select2-theme.css',
+        ]
+
     If you provide your own CSS and would not like Django-Select2 to load any, change
     this setting to a blank string like so::
 
@@ -94,6 +102,14 @@ class Select2Conf(AppConf):
 
     .. tip:: Change this setting to a local asset in your development environment to
         develop without an Internet connection.
+    """
+
+    THEME = "default"
+    """
+    Select2 supports custom themes using the theme option so you can style Select2
+    to match the rest of your application.
+
+    .. tip:: When using other themes, you may need use select2 css and theme css.
     """
 
     I18N_PATH = (

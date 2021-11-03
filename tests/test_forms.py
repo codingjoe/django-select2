@@ -169,6 +169,11 @@ class TestSelect2Mixin:
             "django_select2/django_select2.js",
         )
 
+    def test_theme_setting(self, settings):
+        settings.SELECT2_THEME = "classic"
+        widget = self.widget_cls()
+        assert 'data-theme="classic"' in widget.render("name", None)
+
 
 class TestSelect2MixinSettings:
     def test_default_media(self):
@@ -208,6 +213,13 @@ class TestSelect2MixinSettings:
         sut = Select2Widget()
         result = sut.media.render()
         assert "/select2.css" not in result
+
+    def test_multiple_css_setting(self, settings):
+        settings.SELECT2_CSS = ["select2.css", "select2-theme.css"]
+        sut = Select2Widget()
+        result = sut.media.render()
+        assert "select2.css" in result
+        assert "select2-theme.css" in result
 
 
 class TestHeavySelect2Mixin(TestSelect2Mixin):
@@ -320,6 +332,11 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         widget.no_pickle = NoPickle()
         with pytest.raises(NotImplementedError):
             widget.set_to_cache()
+
+    def test_theme_setting(self, settings):
+        settings.SELECT2_THEME = "classic"
+        widget = self.widget_cls(data_view="heavy_data_1")
+        assert 'data-theme="classic"' in widget.render("name", None)
 
 
 class TestModelSelect2Mixin(TestHeavySelect2Mixin):
