@@ -54,7 +54,7 @@ from pickle import PicklingError  # nosec
 
 import django
 from django import forms
-from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
+from django.contrib.admin.widgets import SELECT2_TRANSLATIONS, AutocompleteMixin
 from django.core import signing
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
@@ -65,7 +65,9 @@ from .cache import cache
 from .conf import settings
 
 if django.VERSION < (4, 0):
-    from django.contrib.admin.utils import lookup_needs_distinct as lookup_spawns_duplicates
+    from django.contrib.admin.utils import (
+        lookup_needs_distinct as lookup_spawns_duplicates,
+    )
 else:
     from django.contrib.admin.utils import lookup_spawns_duplicates
 
@@ -79,6 +81,9 @@ class Select2Mixin:
     form media.
     """
 
+    css_class_name = "django-select2"
+    theme = None
+
     empty_label = ""
 
     def __init__(self, *args, **kwargs):
@@ -90,7 +95,7 @@ class Select2Mixin:
         default_attrs = {
             "lang": self.i18n_name,
             "data-minimum-input-length": 0,
-            "data-theme": settings.SELECT2_THEME,
+            "data-theme": self.theme or settings.SELECT2_THEME,
         }
         if self.is_required:
             default_attrs["data-allow-clear"] = "false"
@@ -102,9 +107,9 @@ class Select2Mixin:
         attrs = super().build_attrs(default_attrs, extra_attrs=extra_attrs)
 
         if "class" in attrs:
-            attrs["class"] += " django-select2"
+            attrs["class"] += " " + self.css_class_name
         else:
-            attrs["class"] = "django-select2"
+            attrs["class"] = self.css_class_name
         return attrs
 
     def optgroups(self, name, value, attrs=None):
@@ -134,6 +139,20 @@ class Select2Mixin:
         return forms.Media(
             js=select2_js + i18n_file + ["django_select2/django_select2.js"],
             css={"screen": select2_css + ["django_select2/django_select2.css"]},
+        )
+
+
+class Select2AdminMixin:
+    """Select2 mixin that uses Django's own select template."""
+
+    css_class_name = "admin-autocomplete"
+    theme = "admin-autocomplete"
+
+    @property
+    def media(self):
+        return forms.Media(
+            js=Select2Mixin().media._js,
+            css=AutocompleteMixin(None, None).media._css,
         )
 
 

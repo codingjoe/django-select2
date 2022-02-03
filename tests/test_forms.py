@@ -21,6 +21,7 @@ from django_select2.forms import (
     ModelSelect2TagWidget,
     ModelSelect2Widget,
     Select2Widget,
+    Select2AdminMixin,
 )
 from tests.testapp import forms
 from tests.testapp.forms import (
@@ -173,6 +174,23 @@ class TestSelect2Mixin:
         settings.SELECT2_THEME = "classic"
         widget = self.widget_cls()
         assert 'data-theme="classic"' in widget.render("name", None)
+
+
+class TestSelect2AdminMixin:
+    def test_media(self):
+        translation.activate("en")
+        assert tuple(Select2AdminMixin().media._js) == (
+            f"https://cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/select2.min.js",
+            f"https://cdnjs.cloudflare.com/ajax/libs/select2/{settings.SELECT2_LIB_VERSION}/js/i18n/en.js",
+            "django_select2/django_select2.js",
+        )
+
+        assert dict(Select2AdminMixin().media._css) == {
+            "screen": [
+                "admin/css/vendor/select2/select2.min.css",
+                "admin/css/autocomplete.css",
+            ]
+        }
 
 
 class TestSelect2MixinSettings:

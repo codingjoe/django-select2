@@ -9,5 +9,5 @@ The application includes Select2 driven Django Widgets and Form Fields.
 """
 from django import get_version
 
-if get_version() < '3.2':
+if get_version() < "3.2":
     default_app_config = "django_select2.apps.Select2AppConfig"
