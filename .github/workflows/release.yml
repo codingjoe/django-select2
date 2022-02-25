@@ -23,7 +23,7 @@ jobs:
   npm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-node@v2.5.1
+      - uses: actions/setup-node@v3.0.0
       - uses: actions/setup-python@v2.3.2
       - uses: actions/checkout@v2.4.0
       - run: python set_version.py
