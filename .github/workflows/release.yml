@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-python@v3
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip setuptools wheel twine
       - name: Build dist packages
@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v3.0.0
       - uses: actions/setup-python@v3
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
       - run: python set_version.py
       - name: Upload packages
         run: npm publish
