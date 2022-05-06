@@ -59,7 +59,7 @@
       }
       $element.on('select2:select', function (e) {
         var name = $(e.currentTarget).attr('name')
-        $('[data-select2-dependent-fields=' + name + ']').each(function () {
+        $('[data-select2-dependent-fields~=' + name + ']').each(function () {
           $(this).val('').trigger('change')
         })
       })
