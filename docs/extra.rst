@@ -8,6 +8,9 @@ Suppose you have an address form where a user should choose a Country and a City
 When the user selects a country we want to show only cities belonging to that country.
 So the one selector depends on another one.
 
+.. note::
+    Does not work with the 'light' version (django_select2.forms.Select2Widget).
+
 Models
 ``````
 
