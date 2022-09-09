@@ -1,5 +1,7 @@
 import os.path
 
+import django
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DEBUG = True
 
@@ -37,5 +39,7 @@ TEMPLATES = [
 
 SECRET_KEY = "123456"
 
-USE_L10N = True
+if django.VERSION < (4, 0):
+    USE_L10N = True
 USE_I18N = True
+USE_TZ = True
