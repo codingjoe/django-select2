@@ -71,7 +71,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel codecov
           pip install -e .[test]
-          pip install django~=${{ matrix.django-version }}
+          pip install django~="${{ matrix.django-version }}.0"
       - name: Run tests
         run: PATH=$PATH:$(pwd)/bin pytest
       - run: codecov
