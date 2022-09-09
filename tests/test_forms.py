@@ -85,22 +85,22 @@ class TestSelect2Mixin:
     def test_no_js_error(self, db, live_server, driver):
         driver.get(live_server + self.url)
         with pytest.raises(NoSuchElementException):
-            error = driver.find_element_by_xpath("//body[@JSError]")
+            error = driver.find_element(By.XPATH, "//body[@JSError]")
             pytest.fail(error.get_attribute("JSError"))
 
     def test_selecting(self, db, live_server, driver):
         driver.get(live_server + self.url)
         with pytest.raises(NoSuchElementException):
-            driver.find_element_by_css_selector(".select2-results")
-        elem = driver.find_element_by_css_selector(".select2-selection")
+            driver.find_element(By.CSS_SELECTOR, ".select2-results")
+        elem = driver.find_element(By.CSS_SELECTOR, ".select2-selection")
         elem.click()
-        results = driver.find_element_by_css_selector(".select2-results")
+        results = driver.find_element(By.CSS_SELECTOR, ".select2-results")
         assert results.is_displayed() is True
-        elem = results.find_element_by_css_selector(".select2-results__option")
+        elem = results.find_element(By.CSS_SELECTOR, ".select2-results__option")
         elem.click()
 
         with pytest.raises(NoSuchElementException):
-            error = driver.find_element_by_xpath("//body[@JSError]")
+            error = driver.find_element(By.XPATH, "//body[@JSError]")
             pytest.fail(error.get_attribute("JSError"))
 
     def test_data_url(self):
@@ -301,12 +301,12 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
     def test_multiple_widgets(self, db, live_server, driver):
         driver.get(live_server + self.url)
         with pytest.raises(NoSuchElementException):
-            driver.find_element_by_css_selector(".select2-results")
+            driver.find_element(By.CSS_SELECTOR, ".select2-results")
 
-        elem1, elem2 = driver.find_elements_by_css_selector(".select2-selection")
+        elem1, elem2 = driver.find_elements(By.CSS_SELECTOR, ".select2-selection")
 
         elem1.click()
-        search1 = driver.find_element_by_css_selector(".select2-search__field")
+        search1 = driver.find_element(By.CSS_SELECTOR, ".select2-search__field")
         search1.send_keys("fo")
         result1 = (
             WebDriverWait(driver, 60)
@@ -319,7 +319,7 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         )
 
         elem2.click()
-        search2 = driver.find_element_by_css_selector(".select2-search__field")
+        search2 = driver.find_element(By.CSS_SELECTOR, ".select2-search__field")
         search2.send_keys("fo")
         result2 = (
             WebDriverWait(driver, 60)
@@ -334,7 +334,7 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         assert result1 != result2
 
         with pytest.raises(NoSuchElementException):
-            error = driver.find_element_by_xpath("//body[@JSError]")
+            error = driver.find_element(By.XPATH, "//body[@JSError]")
             pytest.fail(error.get_attribute("JSError"))
 
     def test_get_url(self):
@@ -646,15 +646,15 @@ class TestHeavySelect2MultipleWidget:
         WebDriverWait(driver, 3).until(
             expected_conditions.presence_of_element_located((By.ID, "id_title"))
         )
-        title = driver.find_element_by_id("id_title")
+        title = driver.find_element(By.ID, "id_title")
         title.send_keys("fo")
-        genres, fartists = driver.find_elements_by_css_selector(
-            ".select2-selection--multiple"
+        genres, fartists = driver.find_elements(
+            By.CSS_SELECTOR, ".select2-selection--multiple"
         )
         genres.click()
         genres.send_keys("o")  # results are Zero One Two Four
         # select second element - One
-        driver.find_element_by_css_selector(".select2-results li:nth-child(2)").click()
+        driver.find_element(By.CSS_SELECTOR, ".select2-results li:nth-child(2)").click()
         genres.submit()
         # there is a ValidationError raised, check for it
         errstring = (
@@ -668,8 +668,8 @@ class TestHeavySelect2MultipleWidget:
         )
         assert errstring == "Title must have more than 3 characters."
         # genres should still have One as selected option
-        result_title = driver.find_element_by_css_selector(
-            ".select2-selection--multiple li"
+        result_title = driver.find_element(
+            By.CSS_SELECTOR, ".select2-selection--multiple li"
         ).get_attribute("title")
         assert result_title == "One"
 
@@ -692,7 +692,7 @@ class TestAddressChainedSelect2Widget:
             country_container,
             city_container,
             city2_container,
-        ) = driver.find_elements_by_css_selector(".select2-selection--single")
+        ) = driver.find_elements(By.CSS_SELECTOR, ".select2-selection--single")
 
         # clicking city select2 lists all available cities
         city_container.click()
@@ -701,7 +701,7 @@ class TestAddressChainedSelect2Widget:
                 (By.CSS_SELECTOR, ".select2-results li")
             )
         )
-        city_options = driver.find_elements_by_css_selector(".select2-results li")
+        city_options = driver.find_elements(By.CSS_SELECTOR, ".select2-results li")
         city_names_from_browser = {option.text for option in city_options}
         city_names_from_db = set(City.objects.values_list("name", flat=True))
         assert len(city_names_from_browser) == City.objects.count()
@@ -714,8 +714,8 @@ class TestAddressChainedSelect2Widget:
                 (By.CSS_SELECTOR, ".select2-results li:nth-child(2)")
             )
         )
-        country_option = driver.find_element_by_css_selector(
-            ".select2-results li:nth-child(2)"
+        country_option = driver.find_element(
+            By.CSS_SELECTOR, ".select2-results li:nth-child(2)"
         )
         country_name = country_option.text
         country_option.click()
@@ -728,7 +728,7 @@ class TestAddressChainedSelect2Widget:
                 (By.CSS_SELECTOR, ".select2-results li")
             )
         )
-        city_options = driver.find_elements_by_css_selector(".select2-results li")
+        city_options = driver.find_elements(By.CSS_SELECTOR, ".select2-results li")
         city_names_from_browser = {option.text for option in city_options}
         city_names_from_db = set(
             Country.objects.get(name=country_name).cities.values_list("name", flat=True)
@@ -737,8 +737,8 @@ class TestAddressChainedSelect2Widget:
         assert city_names_from_browser == city_names_from_db
 
         # selecting a city reaaly does it
-        city_option = driver.find_element_by_css_selector(
-            ".select2-results li:nth-child(2)"
+        city_option = driver.find_element(
+            By.CSS_SELECTOR, ".select2-results li:nth-child(2)"
         )
         city_name = city_option.text
         city_option.click()
@@ -751,7 +751,7 @@ class TestAddressChainedSelect2Widget:
                 (By.CSS_SELECTOR, ".select2-results li")
             )
         )
-        country_options = driver.find_elements_by_css_selector(".select2-results li")
+        country_options = driver.find_elements(By.CSS_SELECTOR, ".select2-results li")
         country_names_from_browser = {option.text for option in country_options}
         country_names_from_db = {City.objects.get(name=city_name).country.name}
         assert len(country_names_from_browser) != Country.objects.count()
@@ -765,7 +765,7 @@ class TestAddressChainedSelect2Widget:
             country_container,
             city_container,
             city2_container,
-        ) = driver.find_elements_by_css_selector(".select2-selection--single")
+        ) = driver.find_elements(By.CSS_SELECTOR, ".select2-selection--single")
 
         # selecting a country really does it
         country_container.click()
@@ -774,8 +774,8 @@ class TestAddressChainedSelect2Widget:
                 (By.CSS_SELECTOR, ".select2-results li:nth-child(2)")
             )
         )
-        country_option = driver.find_element_by_css_selector(
-            ".select2-results li:nth-child(2)"
+        country_option = driver.find_element(
+            By.CSS_SELECTOR, ".select2-results li:nth-child(2)"
         )
         country_name = country_option.text
         country_option.click()
@@ -788,8 +788,8 @@ class TestAddressChainedSelect2Widget:
                 (By.CSS_SELECTOR, ".select2-results li")
             )
         )
-        city2_option = driver.find_element_by_css_selector(
-            ".select2-results li:nth-child(2)"
+        city2_option = driver.find_element(
+            By.CSS_SELECTOR, ".select2-results li:nth-child(2)"
         )
         city2_name = city2_option.text
         city2_option.click()
@@ -802,8 +802,8 @@ class TestAddressChainedSelect2Widget:
                 (By.CSS_SELECTOR, ".select2-results li:nth-child(3)")
             )
         )
-        country_option = driver.find_element_by_css_selector(
-            ".select2-results li:nth-child(3)"
+        country_option = driver.find_element(
+            By.CSS_SELECTOR, ".select2-results li:nth-child(3)"
         )
         country_name = country_option.text
         country_option.click()
