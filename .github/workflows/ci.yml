@@ -61,7 +61,7 @@ jobs:
       - run: python -m pip install Django~="${{ matrix.django-version }}.0"
       - run: python -m pip install -e .[test]
       - run: python -m pytest
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
 
   Selenium:
     needs:
@@ -86,4 +86,4 @@ jobs:
       - run: python -m pip install Django
       - run: python -m pip install -e .[test,selenium]
       - run: python -m pytest
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
