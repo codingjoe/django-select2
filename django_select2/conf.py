@@ -199,28 +199,10 @@ class Select2Conf(AppConf):
     """
 
     """
-    Custo JSON encoder class used for encoding JSON response used in ModelSelect2Widget, ModelSelect2MultipleWidget 
-    and ModelSelect2TagWidget.
-    Useful when your models uses some special proxy fields and 
-    you get error: Object of type <field> is not JSON serializable 
-    
-    Default value is: django.core.serializers.json.DjangoJSONEncoder
-    
-    For example:
-    
-    If you use django-hashid-field package, you'll get an Object of type Hashid is not JSON serializable when you try
-    to use ModelSelect2Widget.
-    Just extend DjangoJSONEncoder:
-        from django.core.serializers.json import DjangoJSONEncoder
-        from hashid_field import Hashid
-        
-        class HashidJSONEncoder(DjangoJSONEncoder):
-            def default(self, o):
-                if isinstance(o, Hashid):
-                    return str(o)
-                return super().default(o)
-                
-    And set SELECT2_JSON_ENCODER to 'app_name.econders.HashidJSONEncoder' in settings.py of your project.
+    A :class:`JSONEncoder<json.JSONEncoder>` used to generate the API response for the model widgets.
+
+    A custom JSON encoder might be useful when your models uses
+    a special primary key, that isn't serializable by the default encoder.
     """
     JSON_ENCODER = 'django.core.serializers.json.DjangoJSONEncoder'
 
