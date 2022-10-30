@@ -198,13 +198,13 @@ class Select2Conf(AppConf):
     ``settings.DJANGO_SELECT2_I18N`` refers to :attr:`.I18N_PATH`.
     """
 
+    JSON_ENCODER = 'django.core.serializers.json.DjangoJSONEncoder'
     """
     A :class:`JSONEncoder<json.JSONEncoder>` used to generate the API response for the model widgets.
 
     A custom JSON encoder might be useful when your models uses
     a special primary key, that isn't serializable by the default encoder.
     """
-    JSON_ENCODER = 'django.core.serializers.json.DjangoJSONEncoder'
 
     class Meta:
         """Prefix for all Django-Select2 settings."""
