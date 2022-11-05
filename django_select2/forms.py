@@ -86,9 +86,10 @@ class Select2Mixin:
 
     empty_label = ""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.i18n_name = SELECT2_TRANSLATIONS.get(get_language())
+    @property
+    def i18n_name(self):
+        """Name of the i18n file for the current language."""
+        return SELECT2_TRANSLATIONS.get(get_language())
 
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""

@@ -3,7 +3,6 @@ import os
 from collections.abc import Iterable
 
 import pytest
-from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils import translation
@@ -48,11 +47,16 @@ class TestSelect2Mixin:
         assert "my-class" in widget.render("name", None)
         assert "django-select2" in widget.render("name", None)
 
-    @pytest.mark.parametrize("code,name", SELECT2_TRANSLATIONS.items())
-    def test_lang_attr(self, code, name):
-        translation.activate(code)
-        widget = self.widget_cls()
-        assert f'lang="{name}"' in widget.render("name", None)
+    def test_lang_attr(self):
+        with translation.override("de"):
+            widget = Select2Widget()
+            assert 'lang="de"' in widget.render("name", None)
+
+        # Regression test for #163
+        widget = Select2Widget()
+        assert widget.i18n_name == "en"
+        with translation.override("de"):
+            assert widget.i18n_name == "de"
 
     def test_allow_clear(self, db):
         required_field = self.form.fields["artist"]
@@ -258,11 +262,10 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
             "name", None
         )
 
-    @pytest.mark.parametrize("code,name", SELECT2_TRANSLATIONS.items())
-    def test_lang_attr(self, code, name):
-        translation.activate(code)
-        widget = self.widget_cls(data_view="heavy_data_1")
-        assert f'lang="{name}"' in widget.render("name", None)
+    def test_lang_attr(self):
+        with translation.override("fr"):
+            widget = self.widget_cls(data_view="heavy_data_1")
+            assert 'lang="fr"' in widget.render("name", None)
 
     def test_selected_option(self, db):
         not_required_field = self.form.fields["primary_genre"]
