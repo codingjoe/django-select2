@@ -82,12 +82,14 @@ class TestSelect2Mixin:
             "primary_genre", None
         )
 
+    @pytest.mark.selenium
     def test_no_js_error(self, db, live_server, driver):
         driver.get(live_server + self.url)
         with pytest.raises(NoSuchElementException):
             error = driver.find_element(By.XPATH, "//body[@JSError]")
             pytest.fail(error.get_attribute("JSError"))
 
+    @pytest.mark.selenium
     def test_selecting(self, db, live_server, driver):
         driver.get(live_server + self.url)
         with pytest.raises(NoSuchElementException):
@@ -298,6 +300,7 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         ), widget_output
         assert selected_option2 in widget_output or selected_option2a in widget_output
 
+    @pytest.mark.selenium
     def test_multiple_widgets(self, db, live_server, driver):
         driver.get(live_server + self.url)
         with pytest.raises(NoSuchElementException):
@@ -641,6 +644,7 @@ class TestHeavySelect2MultipleWidget:
         bool(os.environ.get("CI", False)),
         reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=1772",
     )
+    @pytest.mark.selenium
     def test_widgets_selected_after_validation_error(self, db, live_server, driver):
         driver.get(live_server + self.url)
         WebDriverWait(driver, 3).until(
@@ -678,6 +682,7 @@ class TestAddressChainedSelect2Widget:
     url = reverse("model_chained_select2_widget")
     form = forms.AddressChainedSelect2WidgetForm()
 
+    @pytest.mark.selenium
     def test_widgets_selected_after_validation_error(
         self, db, live_server, driver, countries, cities
     ):
@@ -757,6 +762,7 @@ class TestAddressChainedSelect2Widget:
         assert len(country_names_from_browser) != Country.objects.count()
         assert country_names_from_browser == country_names_from_db
 
+    @pytest.mark.selenium
     def test_dependent_fields_clear_after_change_parent(
         self, db, live_server, driver, countries, cities
     ):
