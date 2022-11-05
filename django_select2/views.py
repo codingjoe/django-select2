@@ -92,7 +92,7 @@ class AutoResponseView(BaseListView):
         except BadSignature:
             raise Http404('Invalid "field_id".')
         else:
-            cache_key = "%s%s" % (settings.SELECT2_CACHE_PREFIX, key)
+            cache_key = f"{settings.SELECT2_CACHE_PREFIX}{key}"
             widget_dict = cache.get(cache_key)
             if widget_dict is None:
                 raise Http404("field_id not found")

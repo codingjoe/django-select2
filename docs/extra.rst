@@ -39,7 +39,7 @@ the field in the form. The value represents the name of the field in the model (
     class AddressForm(forms.Form):
         country = forms.ModelChoiceField(
             queryset=Country.objects.all(),
-            label=u"Country",
+            label="Country",
             widget=ModelSelect2Widget(
                 model=Country,
                 search_fields=['name__icontains'],
@@ -48,7 +48,7 @@ the field in the form. The value represents the name of the field in the model (
 
         city = forms.ModelChoiceField(
             queryset=City.objects.all(),
-            label=u"City",
+            label="City",
             widget=ModelSelect2Widget(
                 model=City,
                 search_fields=['name__icontains'],
@@ -72,7 +72,7 @@ Customize the form in a manner:
     class AddressForm(forms.Form):
         country = forms.ModelChoiceField(
             queryset=Country.objects.all(),
-            label=u"Country",
+            label="Country",
             widget=ModelSelect2Widget(
                 search_fields=['name__icontains'],
                 dependent_fields={'city': 'cities'},
@@ -81,7 +81,7 @@ Customize the form in a manner:
 
         city = forms.ModelChoiceField(
             queryset=City.objects.all(),
-            label=u"City",
+            label="City",
             widget=ModelSelect2Widget(
                 search_fields=['name__icontains'],
                 dependent_fields={'country': 'country'},

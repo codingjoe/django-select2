@@ -16,7 +16,7 @@ Widgets are generally of two types:
     have to be pre-rendered onto the page
     and JavaScript would be used to search
     through them. Said that, they are also one
-    the most easiest to use. They are a
+    the easiest to use. They are a
     drop-in-replacement for Django's default
     select widgets.
 
@@ -293,7 +293,7 @@ class HeavySelect2Mixin:
         return output
 
     def _get_cache_key(self):
-        return "%s%s" % (settings.SELECT2_CACHE_PREFIX, self.uuid)
+        return f"{settings.SELECT2_CACHE_PREFIX}{self.uuid}"
 
     def set_to_cache(self):
         """

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Create Book</title>
@@ -14,7 +14,7 @@
         {{ form.as_p }}
         <input type="submit">
     </form>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
     {{ form.media.js }}
 </body>
 </html>

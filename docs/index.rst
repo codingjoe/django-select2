@@ -8,6 +8,16 @@ Install ``django-select2``::
     python3 -m pip install django-select2
 
 Add ``django_select2`` to your ``INSTALLED_APPS`` in your project settings.
+Since version 8, please ensure that Django's admin app is enabled too:
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        # other django apps…
+        'django.contrib.admin',
+        # other 3rd party apps…
+        'django_select2',
+    ]
 
 Add ``django_select`` to your URL root configuration:
 
@@ -16,20 +26,20 @@ Add ``django_select`` to your URL root configuration:
     from django.urls import include, path
 
     urlpatterns = [
-        # … other patterns
+        # other patterns…
         path("select2/", include("django_select2.urls")),
-        # … other patterns
+        # other patterns…
     ]
 
 
 ``django-select2`` requires a cache backend which is **persistent**
-across all application servers.. 
+across all application servers..
 
 **This means that the** :class:`.DummyCache` **backend will not work!**
 
 The default cache backend is :class:`.LocMemCache`, which is persistent
 across a single node. For projects with a single application server
-this will work fine, however you will run into issues when 
+this will work fine, however you will run into issues when
 you scale up into multiple servers.
 
 Below is an example setup using Redis, which is a solution that

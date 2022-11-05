@@ -6,7 +6,7 @@
     module.exports = factory(require('jquery'))
   } else {
     // Browser globals
-    factory(jQuery)
+    factory(jQuery || window.django.jQuery)
   }
 }(function ($) {
   'use strict'

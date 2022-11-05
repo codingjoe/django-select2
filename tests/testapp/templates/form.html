@@ -1,6 +1,5 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
+{% load static %}<!DOCTYPE html>
+<html lang="en">
 <head>
   {{ form.media.css }}
   <style type="text/css">
@@ -15,7 +14,7 @@
   {{ form }}
   <input type="submit" value="Submit Form"/>
 </form>
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
 <script type="text/javascript">
   window.onerror = function (msg) {
     $("body").attr("JSError", msg);
