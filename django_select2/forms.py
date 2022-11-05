@@ -146,14 +146,15 @@ class Select2Mixin:
 class Select2AdminMixin:
     """Select2 mixin that uses Django's own select template."""
 
-    css_class_name = "admin-autocomplete"
     theme = "admin-autocomplete"
 
     @property
     def media(self):
+        css = {**AutocompleteMixin(None, None).media._css}
+        css["screen"].append("django_select2/django_select2.css")
         return forms.Media(
             js=Select2Mixin().media._js,
-            css=AutocompleteMixin(None, None).media._css,
+            css=css,
         )
 
 

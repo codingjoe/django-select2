@@ -195,6 +195,7 @@ class TestSelect2AdminMixin:
             "screen": [
                 "admin/css/vendor/select2/select2.min.css",
                 "admin/css/autocomplete.css",
+                "django_select2/django_select2.css",
             ]
         }
 
