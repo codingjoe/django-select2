@@ -20,8 +20,8 @@ from django_select2.forms import (
     HeavySelect2Widget,
     ModelSelect2TagWidget,
     ModelSelect2Widget,
-    Select2Widget,
     Select2AdminMixin,
+    Select2Widget,
 )
 from tests.testapp import forms
 from tests.testapp.forms import (

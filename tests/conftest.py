@@ -7,9 +7,8 @@ from selenium.common.exceptions import WebDriverException
 
 
 def pytest_configure(config):
-  config.addinivalue_line(
-        "markers", "selenium: skip if selenium is not installed"
-  )
+    config.addinivalue_line("markers", "selenium: skip if selenium is not installed")
+
 
 def random_string(n):
     return "".join(

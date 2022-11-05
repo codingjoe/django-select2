@@ -198,7 +198,7 @@ class Select2Conf(AppConf):
     ``settings.DJANGO_SELECT2_I18N`` refers to :attr:`.I18N_PATH`.
     """
 
-    JSON_ENCODER = 'django.core.serializers.json.DjangoJSONEncoder'
+    JSON_ENCODER = "django.core.serializers.json.DjangoJSONEncoder"
     """
     A :class:`JSONEncoder<json.JSONEncoder>` used to generate the API response for the model widgets.
 

@@ -2,8 +2,8 @@
 from django.core import signing
 from django.core.signing import BadSignature
 from django.http import Http404, JsonResponse
-from django.views.generic.list import BaseListView
 from django.utils.module_loading import import_string
+from django.views.generic.list import BaseListView
 
 from .cache import cache
 from .conf import settings
@@ -45,7 +45,7 @@ class AutoResponseView(BaseListView):
                 ],
                 "more": context["page_obj"].has_next(),
             },
-            encoder=import_string(settings.SELECT2_JSON_ENCODER)
+            encoder=import_string(settings.SELECT2_JSON_ENCODER),
         )
 
     def get_queryset(self):
