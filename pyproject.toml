@@ -1,0 +1,89 @@
+[build-system]
+requires = ["flit_core>=3.2", "flit_scm", "wheel"]
+build-backend = "flit_scm:buildapi"
+
+[project]
+name = "django-select2"
+authors = [
+  { name = "Johannes Maron", email = "johannes@maron.family" },
+]
+readme = "README.rst"
+license = { file = "LICENSE" }
+keywords = ["Django", "select2", "autocomplete", "typeahead"]
+dynamic = ["version", "description"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: MIT License",
+  "Intended Audience :: Developers",
+  "Environment :: Web Environment",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Framework :: Django",
+  "Framework :: Django :: 3.2",
+  "Framework :: Django :: 4.0",
+  "Framework :: Django :: 4.1",
+  "Topic :: Software Development",
+]
+requires-python = ">=3.8"
+dependencies = [
+  "django>=3.2",
+  "django-appconf>=0.6.0"
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "selenium",
+]
+selenium = [
+  "selenium",
+]
+docs = [
+  "sphinx",
+]
+
+[project.urls]
+Project-URL = "https://github.com/codingjoe/django-select2"
+Changelog = "https://github.com/codingjoe/django-select2/releases"
+Source = "https://github.com/codingjoe/django-select2"
+Documentation = "https://django-select2.rtfd.io/"
+Issue-Tracker = "https://github.com/codingjoe/django-select2/issues"
+
+[tool.flit.module]
+name = "django_select2"
+
+[tool.setuptools_scm]
+write_to = "django_select2/_version.py"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov --tb=short -rxs"
+testpaths = ["tests"]
+DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
+
+[tool.coverage.run]
+source = ["django_select2"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.isort]
+atomic = true
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+known_first_party = "django_select2, tests"
+default_section = "THIRDPARTY"
+combine_as_imports = true
+
+[tool.pydocstyle]
+add_ignore = "D1"

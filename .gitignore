@@ -23,3 +23,5 @@ ghostdriver.log
 coverage.xml
 .eggs/
 db.sqlite3
+
+_version.py
