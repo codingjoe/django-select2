@@ -6,7 +6,7 @@ Django-Select2
 
 |version| |coverage| |license|
 
-Custom autocompelte fields for `Django`_.
+Custom autocomplete fields for `Django`_.
 
 Documentation
 -------------
