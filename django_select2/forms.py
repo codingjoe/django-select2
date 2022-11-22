@@ -600,7 +600,7 @@ class ModelSelect2TagWidget(ModelSelect2Mixin, HeavySelect2TagWidget):
                 # You need to implement this method yourself, to ensure proper object creation.
                 pks = self.queryset.filter(**{'pk__in': list(values)}).values_list('pk', flat=True)
                 pks = set(map(str, pks))
-                cleaned_values = list(values)
+                cleaned_values = list(pks)
                 for val in values - pks:
                     cleaned_values.append(self.queryset.create(title=val).pk)
                 return cleaned_values
