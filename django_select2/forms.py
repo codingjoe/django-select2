@@ -227,6 +227,8 @@ class HeavySelect2Mixin:
     """Mixin that adds select2's AJAX options and registers itself on Django's cache."""
 
     dependent_fields = {}
+    data_view = None
+    data_url = None
 
     def __init__(self, attrs=None, choices=(), **kwargs):
         """
@@ -247,8 +249,8 @@ class HeavySelect2Mixin:
 
         self.uuid = str(uuid.uuid4())
         self.field_id = signing.dumps(self.uuid)
-        self.data_view = kwargs.pop("data_view", None)
-        self.data_url = kwargs.pop("data_url", None)
+        self.data_view = kwargs.pop("data_view", self.data_view)
+        self.data_url = kwargs.pop("data_url", self.data_url)
 
         dependent_fields = kwargs.pop("dependent_fields", None)
         if dependent_fields is not None:
