@@ -48,6 +48,7 @@ in their names.
 """
 import operator
 import uuid
+import warnings
 from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
@@ -127,8 +128,18 @@ class Select2Mixin:
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/stable/topics/forms/media/#media-as-a-dynamic-property
         """
-        select2_js = [settings.SELECT2_JS] if settings.SELECT2_JS else []
+        select2_js = settings.SELECT2_JS[:] if settings.SELECT2_JS else []
         select2_css = settings.SELECT2_CSS if settings.SELECT2_CSS else []
+
+        if isinstance(select2_js, str):
+            warnings.warn(
+                (
+                    "SELECT2_JS='%(value)s' settings is deprecated, "
+                    "use SELECT2_JS=['%(value)s'] instead."
+                ) % {'value': select2_js},
+                stacklevel=2
+            )
+            select2_js = [select2_js]
 
         if isinstance(select2_css, str):
             select2_css = [select2_css]
@@ -138,7 +149,7 @@ class Select2Mixin:
             i18n_file = [f"{settings.SELECT2_I18N_PATH}/{self.i18n_name}.js"]
 
         return forms.Media(
-            js=select2_js + i18n_file + ["django_select2/django_select2.js"],
+            js=select2_js + i18n_file,
             css={"screen": select2_css + ["django_select2/django_select2.css"]},
         )
 

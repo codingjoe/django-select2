@@ -55,19 +55,22 @@ class Select2Conf(AppConf):
     It has set `select2_` as a default value, which you can change if needed.
     """
 
-    JS = "admin/js/vendor/select2/select2.full.min.js"
+    JS = [
+        "admin/js/vendor/select2/select2.full.min.js",
+        "django_select2/django_select2.js",
+    ]
     """
-    The URI for the Select2 JS file. By default this points to version shipped with Django.
+    The URI list for the Select2 JS files. By default this points to version shipped with Django.
 
     If you want to select the version of the JS library used, or want to serve it from
     the local 'static' resources, add a line to your settings.py like so::
 
-        SELECT2_JS = 'assets/js/select2.min.js'
+        SELECT2_JS = ['assets/js/jquery.js', 'assets/js/select2.min.js']
 
     If you provide your own JS and would not like Django-Select2 to load any, change
-    this setting to a blank string like so::
+    this setting to a empty list like so::
 
-        SELECT2_JS = ''
+        SELECT2_JS = []
 
     .. tip:: Change this setting to a local asset in your development environment to
         develop without an Internet connection.

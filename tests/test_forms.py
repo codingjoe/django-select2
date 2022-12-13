@@ -135,15 +135,15 @@ class TestSelect2Mixin:
         translation.activate("de")
         assert tuple(Select2Widget().media._js) == (
             "admin/js/vendor/select2/select2.full.min.js",
-            "admin/js/vendor/select2/i18n/de.js",
             "django_select2/django_select2.js",
+            "admin/js/vendor/select2/i18n/de.js",
         )
 
         translation.activate("en")
         assert tuple(Select2Widget().media._js) == (
             "admin/js/vendor/select2/select2.full.min.js",
-            "admin/js/vendor/select2/i18n/en.js",
             "django_select2/django_select2.js",
+            "admin/js/vendor/select2/i18n/en.js",
         )
 
         translation.activate("00")
@@ -155,8 +155,8 @@ class TestSelect2Mixin:
         translation.activate("sr-Cyrl")
         assert tuple(Select2Widget().media._js) == (
             "admin/js/vendor/select2/select2.full.min.js",
-            "admin/js/vendor/select2/i18n/sr-Cyrl.js",
             "django_select2/django_select2.js",
+            "admin/js/vendor/select2/i18n/sr-Cyrl.js",
         )
 
         pytest.importorskip("django", minversion="2.0.4")
@@ -164,15 +164,15 @@ class TestSelect2Mixin:
         translation.activate("zh-hans")
         assert tuple(Select2Widget().media._js) == (
             "admin/js/vendor/select2/select2.full.min.js",
-            "admin/js/vendor/select2/i18n/zh-CN.js",
             "django_select2/django_select2.js",
+            "admin/js/vendor/select2/i18n/zh-CN.js",
         )
 
         translation.activate("zh-hant")
         assert tuple(Select2Widget().media._js) == (
             "admin/js/vendor/select2/select2.full.min.js",
-            "admin/js/vendor/select2/i18n/zh-TW.js",
             "django_select2/django_select2.js",
+            "admin/js/vendor/select2/i18n/zh-TW.js",
         )
 
     def test_theme_setting(self, settings):
@@ -186,8 +186,8 @@ class TestSelect2AdminMixin:
         translation.activate("en")
         assert tuple(Select2AdminMixin().media._js) == (
             "admin/js/vendor/select2/select2.full.min.js",
-            "admin/js/vendor/select2/i18n/en.js",
             "django_select2/django_select2.js",
+            "admin/js/vendor/select2/i18n/en.js",
         )
 
         assert dict(Select2AdminMixin().media._css) == {
@@ -208,7 +208,7 @@ class TestSelect2MixinSettings:
         assert "django_select2/django_select2.js" in result
 
     def test_js_setting(self, settings):
-        settings.SELECT2_JS = "alternate.js"
+        settings.SELECT2_JS = ["alternate.js", "django_select2/django_select2.js"]
         sut = Select2Widget()
         result = sut.media.render()
         assert "alternate.js" in result
@@ -218,7 +218,7 @@ class TestSelect2MixinSettings:
         settings.SELECT2_JS = ""
         sut = Select2Widget()
         result = sut.media.render()
-        assert "django_select2/django_select2.js" in result
+        assert "django_select2/django_select2.js" not in result
 
     def test_css_setting(self, settings):
         settings.SELECT2_CSS = "alternate.css"
