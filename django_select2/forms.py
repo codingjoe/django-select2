@@ -127,9 +127,11 @@ class Select2Mixin:
         .. Note:: For more information visit
             https://docs.djangoproject.com/en/stable/topics/forms/media/#media-as-a-dynamic-property
         """
-        select2_js = [settings.SELECT2_JS] if settings.SELECT2_JS else []
+        select2_js = settings.SELECT2_JS if settings.SELECT2_JS else []
         select2_css = settings.SELECT2_CSS if settings.SELECT2_CSS else []
 
+        if isinstance(select2_js, str):
+            select2_js = [select2_js]
         if isinstance(select2_css, str):
             select2_css = [select2_css]
 
