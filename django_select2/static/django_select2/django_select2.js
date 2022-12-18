@@ -66,9 +66,36 @@
     })
     return this
   }
+  
+  function iterDjangoSelect2(){
+    element.querySelectorAll('.django-select2').forEach(djSelect => {
+      if (djSelect.closest('.empty-form') === null) {
+        $(djSelect).djangoSelect2();
+      }
+    });
+  }
+  
+  function initDjangoSelect2(element){
+    if(element.classList.contains('django-select2')){
+      $(element).djangoSelect2();
+    } else {
+      iterDjangoSelect2();
+    }
+  }
 
   $(function () {
-    $('.django-select2').djangoSelect2()
+    iterDjangoSelect2();
+    $(document).on('formset:added', (event, $row, formsetName) => {
+      let target;
+      if (event.detail && event.detail.formsetName) {
+        // Django >= 4.1
+        target = event.target;
+      } else {
+        // Django < 4.1, use $row
+        target = $row.get(0);
+      }
+      initDjangoSelect2(target);
+    });
   })
 
   return $.fn.djangoSelect2
