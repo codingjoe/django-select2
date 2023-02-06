@@ -269,7 +269,9 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
             in not_required_field.widget.render("primary_genre", 1)
             or '<option value="1" selected>One</option>'
             in not_required_field.widget.render("primary_genre", 1)
-        ), (not_required_field.widget.render("primary_genre", 1))
+        ), not_required_field.widget.render(
+            "primary_genre", 1
+        )
 
     def test_many_selected_option(self, db, genres):
         field = HeavySelect2MultipleWidgetForm().fields["genres"]
