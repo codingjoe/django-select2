@@ -9,4 +9,4 @@ class Select2AppConfig(AppConfig):
     verbose_name = "Select2"
 
     def ready(self):
-        from . import conf. # noqa
+        from . import conf  # noqa
