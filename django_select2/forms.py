@@ -54,12 +54,11 @@ from pickle import PicklingError  # nosec
 
 import django
 from django import forms
-from django.contrib.admin.widgets import SELECT2_TRANSLATIONS, AutocompleteMixin
+from django.contrib.admin.widgets import AutocompleteMixin
 from django.core import signing
 from django.db.models import Q
 from django.forms.models import ModelChoiceIterator
 from django.urls import reverse
-from django.utils.translation import get_language
 
 from .cache import cache
 from .conf import settings
@@ -89,7 +88,15 @@ class Select2Mixin:
     @property
     def i18n_name(self):
         """Name of the i18n file for the current language."""
-        return SELECT2_TRANSLATIONS.get(get_language())
+        if django.VERSION < (4, 1):
+            from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
+            from django.utils.translation import get_language
+
+            return SELECT2_TRANSLATIONS.get(get_language())
+        else:
+            from django.contrib.admin.widgets import get_select2_language
+
+            return get_select2_language()
 
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""

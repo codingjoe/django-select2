@@ -2,6 +2,7 @@ import json
 import os
 from collections.abc import Iterable
 
+import django
 import pytest
 from django.db.models import QuerySet
 from django.urls import reverse
@@ -822,3 +823,73 @@ class TestAddressChainedSelect2Widget:
             )
         )
         assert city2_container.text == ""
+
+
+@pytest.fixture(
+    name="widget",
+    params=[
+        (Select2Widget, {}),
+        (HeavySelect2Widget, {"data_view": "heavy_data_1"}),
+        (HeavySelect2MultipleWidget, {"data_view": "heavy_data_1"}),
+        (ModelSelect2Widget, {}),
+        (ModelSelect2TagWidget, {}),
+    ],
+    ids=lambda p: p[0],
+)
+def widget_fixture(request):
+    widget_class, widget_kwargs = request.param
+    return widget_class(**widget_kwargs)
+
+
+@pytest.mark.skipif(django.VERSION < (4, 1), reason="Only for Django 4.1+")
+@pytest.mark.parametrize(
+    "locale,expected",
+    [
+        ("fr-FR", "fr"),
+        # Some locales with a country code are natively supported by select2's i18n
+        ("pt-BR", "pt-BR"),
+        ("sr-Cyrl", "sr-Cyrl"),
+    ],
+    ids=repr,
+)
+def test_i18n_name_property_with_country_code_in_locale(widget, locale, expected):
+    """Test we fall back to the language code if the locale contain an unsupported country code."""
+    with translation.override(locale):
+        assert widget.i18n_name == expected
+
+
+@pytest.mark.skipif(django.VERSION < (4, 1), reason="Only for Django 4.1+")
+def test_i18n_media_js_with_country_code_in_locale(widget):
+    translation.activate("fr-FR")
+    assert tuple(widget.media._js) == (
+        "admin/js/vendor/select2/select2.full.min.js",
+        "admin/js/vendor/select2/i18n/fr.js",
+        "django_select2/django_select2.js",
+    )
+
+
+@pytest.mark.skipif(django.VERSION >= (4, 1), reason="Only for Django 4.0 and previous")
+@pytest.mark.parametrize(
+    "locale,expected",
+    [
+        ("fr-FR", None),
+        # Some locales with a country code are natively supported by select2's i18n
+        ("pt-BR", "pt-BR"),
+        ("sr-Cyrl", "sr-Cyrl"),
+    ],
+)
+def test_i18n_name_property_with_country_code_in_locale_for_older_django(
+    widget, locale, expected
+):
+    """No fallback for locale with an unsupported country code."""
+    with translation.override(locale):
+        assert widget.i18n_name == expected
+
+
+@pytest.mark.skipif(django.VERSION >= (4, 1), reason="Only for Django 4.0 and previous")
+def test_i18n_media_js_with_country_code_in_locale_for_older_django(widget):
+    translation.activate("fr-FR")
+    assert tuple(widget.media._js) == (
+        "admin/js/vendor/select2/select2.full.min.js",
+        "django_select2/django_select2.js",
+    )
