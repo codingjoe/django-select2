@@ -3,15 +3,16 @@ Contributing
 
 This package uses the pyTest test runner. To run the tests locally simply run::
 
-    python setup.py test
+    python -m pytest -m "not selenium"
 
 If you need to the development dependencies installed of you local IDE, you can run::
 
-    python setup.py develop
+    python -m pip install -e .[test]
 
 Documentation pull requests welcome. The Sphinx documentation can be compiled via::
 
-    python setup.py build_sphinx
+    python -m pip install -e .[docs]
+    python -m sphinx -W -b doctest -b html docs docs/_build
 
 Bug reports welcome, even more so if they include a correct patch.  Much
 more so if you start your patch by adding a failing unit test, and correct
