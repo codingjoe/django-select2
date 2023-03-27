@@ -258,7 +258,7 @@ class HeavySelect2Mixin:
         if dependent_fields is not None:
             self.dependent_fields = dict(dependent_fields)
         if not (self.data_view or self.data_url):
-            raise ValueError('You must ether specify "data_view" or "data_url".')
+            raise ValueError('You must either specify "data_view" or "data_url".')
         self.userGetValTextFuncName = kwargs.pop("userGetValTextFuncName", "null")
 
     def get_url(self):
