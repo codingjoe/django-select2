@@ -20,13 +20,14 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
   "Framework :: Django",
   "Framework :: Django :: 3.2",
-  "Framework :: Django :: 4.0",
   "Framework :: Django :: 4.1",
+  "Framework :: Django :: 4.2",
   "Topic :: Software Development",
 ]
 requires-python = ">=3.8"
@@ -67,6 +68,7 @@ minversion = "6.0"
 addopts = "--cov --tb=short -rxs"
 testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
+filterwarnings = ["ignore::PendingDeprecationWarning", "error::RuntimeWarning"]
 
 [tool.coverage.run]
 source = ["django_select2"]
