@@ -1,13 +1,22 @@
 Contributing
 ============
 
-This package uses the pyTest test runner. To run the tests locally simply run::
+Before you start editing the python code, you will need to make sure
+you have binary dependencies installed::
 
-    python -m pytest -m "not selenium"
+    # Debian
+    sudo apt install -y gettext graphviz google-chrome-stable
+    # macOS
+    brew install -y gettext graphviz google-chrome-stable
 
-If you need to the development dependencies installed of you local IDE, you can run::
+To install the package and its dependencies for development
+including tests dependencies, please do:
 
     python -m pip install -e .[test]
+
+You may ran the tests via::
+
+    python -m pytest
 
 Documentation pull requests welcome. The Sphinx documentation can be compiled via::
 

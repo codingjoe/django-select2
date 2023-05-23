@@ -55,13 +55,47 @@ plugin.  It will handle both normal and heavy fields. Simply call
 
         $('.django-select2').djangoSelect2();
 
-
-You can pass see `Select2 options <https://select2.github.io/options.html>`_ if needed::
-
-        $('.django-select2').djangoSelect2({placeholder: 'Select an option'});
-
 Please replace all your ``.select2`` invocations with the here provided
 ``.djangoSelect2``.
+
+
+Configuring Select2
+-------------------
+
+Select2 options can be configured either directly from Javascript or from within Django
+using widget attributes. `(List of options in the Select2 docs) <https://select2.org/configuration/options-api>`_.
+
+To pass options in javascript
+
+.. code-block:: javascript
+
+    $('.django-select2').djangoSelect2({
+        minimumInputLength: 0,
+        placeholder: 'Select an option',
+    });
+
+From Django, you can use ``data-`` attributes using the same names in camel-case and
+passing them to your widget. Select2 will then pick these up. For example when
+initialising a widget in a form, you could do:
+
+.. code-block:: python
+
+    class MyForm(forms.Form):
+        my_field = forms.ModelMultipleChoiceField(
+            widget=ModelSelect2MultipleWidget(
+                model=MyModel
+                search_fields=['another_field']
+                attrs={
+                    "data-minimum-input-length": 0,
+                    "data-placeholder": "Select an option",
+                    "data-close-on-select": "false",
+                }
+            )
+        )
+
+(If you do not want to initialize the widget, you could add the attributes by overriding
+a widget method and adding them in a super call, e.g. `get_context() <https://docs.djangoproject.com/en/dev/ref/forms/widgets/#django.forms.Widget.get_context>`_)
+
 
 Security & Authentication
 -------------------------
