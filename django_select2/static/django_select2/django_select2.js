@@ -23,8 +23,6 @@
             page: params.page,
             field_id: $element.data('field_id')
           }
-
-          var dependentFields = $element.data('select2-dependent-fields')
           var dependentFields = $element.data('select2-dependent-fields')
           if (dependentFields) {
             dependentFields = dependentFields.trim().split(/\s+/)
