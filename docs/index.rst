@@ -33,7 +33,8 @@ Add ``django_select`` to your URL root configuration:
 
 
 ``django-select2`` requires a cache backend which is **persistent**
-across all application servers..
+across all application servers (except when only using "Light" widgets,
+i.e. widgets for which no view-coe is used).
 
 **This means that the** :class:`.DummyCache` **backend will not work!**
 
