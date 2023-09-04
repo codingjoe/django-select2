@@ -31,6 +31,7 @@ master_doc = "index"  # default in Sphinx v2
 
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosectionlabel",
     "sphinx.ext.napoleon",
     "sphinx.ext.inheritance_diagram",
     "sphinx.ext.intersphinx",
