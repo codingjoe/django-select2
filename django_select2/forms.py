@@ -63,7 +63,7 @@ import django
 from django import forms
 from django.contrib.admin.widgets import AutocompleteMixin
 from django.core import signing
-from django.db.models import Q
+from django.db.models import Q, When, Value, Case, IntegerField
 from django.forms.models import ModelChoiceIterator
 from django.urls import reverse
 
@@ -365,6 +365,7 @@ class ModelSelect2Mixin:
     model = None
     queryset = None
     search_fields = []
+    order_results_by_search_fields = False
     """
     Model lookups that are used to filter the QuerySet.
 
@@ -451,6 +452,15 @@ class ModelSelect2Mixin:
                 or_queries = [Q(**{orm_lookup: bit}) for orm_lookup in search_fields]
                 select &= reduce(operator.or_, or_queries)
             or_queries = [Q(**{orm_lookup: term}) for orm_lookup in search_fields]
+            if self.order_results_by_search_fields:
+                when_conditions = [When(or_queries[i], then=Value(len(or_queries) - i - 1)) for i in
+                                   range(len(or_queries))]
+                queryset = queryset.alias(
+                    s2_search_ordering_index=Case(
+                        *when_conditions,
+                        output_field=IntegerField(),
+                        default=Value(-1))
+                ).order_by('-s2_search_ordering_index')
             select |= reduce(operator.or_, or_queries)
             use_distinct |= any(
                 lookup_spawns_duplicates(queryset.model._meta, search_spec)
