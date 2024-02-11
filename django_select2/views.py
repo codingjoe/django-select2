@@ -1,4 +1,5 @@
 """JSONResponse views for model widgets."""
+
 from django.core import signing
 from django.core.signing import BadSignature
 from django.http import Http404, JsonResponse

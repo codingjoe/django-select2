@@ -7,6 +7,7 @@ The application includes Select2 driven Django Widgets and Form Fields.
 .. _Select2: https://select2.org/
 
 """
+
 from django import get_version
 
 from . import _version

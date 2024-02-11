@@ -1,4 +1,5 @@
 """Settings for Django-Select2."""
+
 from appconf import AppConf
 from django.conf import settings  # NOQA
 

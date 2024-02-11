@@ -11,6 +11,7 @@ It is advised to always setup a separate cache server for Select2.
 
 .. _django.core.cache: https://docs.djangoproject.com/en/dev/topics/cache/
 """
+
 from django.core.cache import caches
 
 from .conf import settings
