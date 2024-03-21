@@ -232,3 +232,17 @@ class GroupieForm(forms.ModelForm):
         model = models.Groupie
         fields = "__all__"
         widgets = {"obsession": ArtistCustomTitleWidget}
+
+
+class CityModelSelect2Widget(ModelSelect2Widget):
+    model = City
+    search_fields = ["name"]
+
+    def result_from_instance(self, obj):
+        return {"id": obj.pk, "text": obj.name, "country": str(obj.country)}
+
+
+class CityForm(forms.Form):
+    city = forms.ModelChoiceField(
+        queryset=City.objects.all(), widget=CityModelSelect2Widget(), required=False
+    )

@@ -438,6 +438,15 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget.queryset = Genre.objects.all()
         assert isinstance(widget.get_queryset(), QuerySet)
 
+    def test_result_from_instance_ModelSelect2Widget(self, genres):
+        widget = ModelSelect2Widget()
+        widget.model = Genre
+        genre = Genre.objects.first()
+        assert widget.result_from_instance(genre) == {
+            "id": genre.pk,
+            "text": str(genre),
+        }
+
     def test_tag_attrs_Select2Widget(self):
         widget = Select2Widget()
         output = widget.render("name", "value")

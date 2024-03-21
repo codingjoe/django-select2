@@ -554,6 +554,25 @@ class ModelSelect2Mixin:
         """
         return str(obj)
 
+    def result_from_instance(self, obj):
+        """
+        Return a dictionary representing the object.
+
+        Can be overridden to change the result returned by
+        :class:`.AutoResponseView` for each object.
+
+        Example usage::
+
+            class MyWidget(ModelSelect2Widget):
+                def result_from_instance(obj):
+                    return {
+                        'id': obj.pk,
+                        'text': self.label_from_instance(obj),
+                        'extra_data': obj.extra_data,
+                    }
+        """
+        return {"id": obj.pk, "text": self.label_from_instance(obj)}
+
 
 class ModelSelect2Widget(ModelSelect2Mixin, HeavySelect2Widget):
     """

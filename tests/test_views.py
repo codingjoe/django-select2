@@ -4,7 +4,11 @@ from django.utils.encoding import smart_str
 
 from django_select2.cache import cache
 from django_select2.forms import ModelSelect2Widget
-from tests.testapp.forms import AlbumModelSelect2WidgetForm, ArtistCustomTitleWidget
+from tests.testapp.forms import (
+    AlbumModelSelect2WidgetForm,
+    ArtistCustomTitleWidget,
+    CityForm,
+)
 from tests.testapp.models import Genre
 
 try:
@@ -83,6 +87,23 @@ class TestAutoResponseView:
         assert {"id": artist.pk, "text": smart_str(artist.title.upper())} in data[
             "results"
         ]
+
+    def test_result_from_instance(self, cities, client):
+        url = reverse("django_select2:auto-json")
+
+        form = CityForm()
+        assert form.as_p()
+        field_id = form.fields["city"].widget.field_id
+        city = cities[0]
+        response = client.get(url, {"field_id": field_id, "term": city.name})
+        assert response.status_code == 200
+        data = json.loads(response.content.decode("utf-8"))
+        assert data["results"]
+        assert {
+            "id": city.pk,
+            "text": smart_str(city),
+            "country": smart_str(city.country),
+        } in data["results"]
 
     def test_url_check(self, client, artists):
         artist = artists[0]
