@@ -238,7 +238,7 @@ class CityModelSelect2Widget(ModelSelect2Widget):
     model = City
     search_fields = ["name"]
 
-    def result_from_instance(self, obj):
+    def result_from_instance(self, obj, request):
         return {"id": obj.pk, "text": obj.name, "country": str(obj.country)}
 
 

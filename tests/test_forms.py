@@ -442,7 +442,7 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget = ModelSelect2Widget()
         widget.model = Genre
         genre = Genre.objects.first()
-        assert widget.result_from_instance(genre) == {
+        assert widget.result_from_instance(genre, request=None) == {
             "id": genre.pk,
             "text": str(genre),
         }
