@@ -4,7 +4,7 @@
 Django-Select2
 ==============
 
-|version| |coverage| |license|
+|version| |coverage| |license| |monthly-downloads|
 
 Custom autocomplete fields for `Django`_.
 
@@ -29,3 +29,6 @@ Documentation available at https://django-select2.readthedocs.io/.
    :target: https://codecov.io/gh/codingjoe/django-select2
 .. |license| image:: https://img.shields.io/badge/license-APL2-blue.svg
    :target: https://raw.githubusercontent.com/codingjoe/django-select2/master/LICENSE.txt
+.. |monthly-downloads| image:: https://assets.piptrends.com/get-last-month-downloads-badge/django-select2.svg
+    :alt: django-select2 Downloads Last Month by pip Trends
+    :target: https://piptrends.com/package/django-select2
