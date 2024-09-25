@@ -69,6 +69,30 @@
 
   $(function () {
     $('.django-select2').djangoSelect2()
+
+    // This part fixes new inlines not having the correct select2 widgets
+    function handleFormsetAdded (row, formsetName) {
+      // Converting to the "normal jQuery"
+      const jqRow = $(row)
+
+      // Because select2 was already instantiated on the empty form, we need to remove it, destroy the instance,
+      // and re-instantiate it.
+      jqRow.find('.django-select2').parent().find('.select2-container').remove()
+      jqRow.find('.django-select2').djangoSelect2('destroy')
+      jqRow.find('.django-select2').djangoSelect2()
+    }
+
+    // See: https://docs.djangoproject.com/en/dev/ref/contrib/admin/javascript/#supporting-versions-of-django-older-than-4-1
+    $(document).on('formset:added', function (event, $row, formsetName) {
+      if (event.detail && event.detail.formsetName) {
+        // Django >= 4.1
+        handleFormsetAdded(event.target, event.detail.formsetName)
+      } else {
+        // Django < 4.1, use $row and formsetName
+        handleFormsetAdded($row.get(0), formsetName)
+      }
+    })
+    // End of fix
   })
 
   return $.fn.djangoSelect2
