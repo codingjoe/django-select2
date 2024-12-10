@@ -10,21 +10,21 @@
   }
 }(function ($) {
   'use strict'
-  var init = function ($element, options) {
+  const init = function ($element, options) {
     $element.select2(options)
   }
 
-  var initHeavy = function ($element, options) {
-    var settings = $.extend({
+  const initHeavy = function ($element, options) {
+    const settings = $.extend({
       ajax: {
         data: function (params) {
-          var result = {
+          const result = {
             term: params.term,
             page: params.page,
             field_id: $element.data('field_id')
           }
 
-          var dependentFields = $element.data('select2-dependent-fields')
+          let dependentFields = $element.data('select2-dependent-fields')
           if (dependentFields) {
             dependentFields = dependentFields.trim().split(/\s+/)
             $.each(dependentFields, function (i, dependentField) {
@@ -49,16 +49,16 @@
   }
 
   $.fn.djangoSelect2 = function (options) {
-    var settings = $.extend({}, options)
+    const settings = $.extend({}, options)
     $.each(this, function (i, element) {
-      var $element = $(element)
+      const $element = $(element)
       if ($element.hasClass('django-select2-heavy')) {
         initHeavy($element, settings)
       } else {
         init($element, settings)
       }
       $element.on('select2:select', function (e) {
-        var name = $(e.currentTarget).attr('name')
+        const name = $(e.currentTarget).attr('name')
         $('[data-select2-dependent-fields~=' + name + ']').each(function () {
           $(this).val('').trigger('change')
         })
@@ -71,7 +71,7 @@
     $('.django-select2').not('[name*=__prefix__]').djangoSelect2()
 
     document.addEventListener('formset:added', (event) => {
-        $(event.target).find('.django-select2').djangoSelect2()
+      $(event.target).find('.django-select2').djangoSelect2()
     })
   })
 
