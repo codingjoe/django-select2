@@ -1,5 +1,6 @@
 import json
 
+from django.urls import reverse
 from django.utils.encoding import smart_str
 
 from django_select2.cache import cache
@@ -10,11 +11,6 @@ from tests.testapp.forms import (
     CityForm,
 )
 from tests.testapp.models import Genre
-
-try:
-    from django.urls import reverse
-except ImportError:
-    from django.core.urlresolvers import reverse
 
 
 class TestAutoResponseView:

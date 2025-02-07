@@ -60,8 +60,8 @@ from functools import reduce
 from itertools import chain
 from pickle import PicklingError  # nosec
 
-import django
 from django import forms
+from django.contrib.admin.utils import lookup_spawns_duplicates
 from django.contrib.admin.widgets import AutocompleteMixin
 from django.core import signing
 from django.db.models import Q
@@ -70,13 +70,6 @@ from django.urls import reverse
 
 from .cache import cache
 from .conf import settings
-
-if django.VERSION < (4, 0):
-    from django.contrib.admin.utils import (
-        lookup_needs_distinct as lookup_spawns_duplicates,
-    )
-else:
-    from django.contrib.admin.utils import lookup_spawns_duplicates
 
 
 class Select2Mixin:
@@ -96,15 +89,9 @@ class Select2Mixin:
     @property
     def i18n_name(self):
         """Name of the i18n file for the current language."""
-        if django.VERSION < (4, 1):
-            from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
-            from django.utils.translation import get_language
+        from django.contrib.admin.widgets import get_select2_language
 
-            return SELECT2_TRANSLATIONS.get(get_language())
-        else:
-            from django.contrib.admin.widgets import get_select2_language
-
-            return get_select2_language()
+        return get_select2_language()
 
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Add select2 data attributes."""
