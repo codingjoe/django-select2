@@ -873,11 +873,3 @@ def test_i18n_media_js_with_country_code_in_locale(widget):
         "admin/js/vendor/select2/i18n/fr.js",
         "django_select2/django_select2.js",
     )
-
-
-def test_i18n_name_property_with_country_code_in_locale_for_older_django(
-    widget, locale, expected
-):
-    """No fallback for locale with an unsupported country code."""
-    with translation.override(locale):
-        assert widget.i18n_name == expected
