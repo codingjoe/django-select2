@@ -750,7 +750,7 @@ class TestAddressChainedSelect2Widget:
         assert len(city_names_from_browser) != City.objects.count()
         assert city_names_from_browser == city_names_from_db
 
-        # selecting a city reaaly does it
+        # selecting a city really does it
         city_option = driver.find_element(
             By.CSS_SELECTOR, ".select2-results li:nth-child(2)"
         )
