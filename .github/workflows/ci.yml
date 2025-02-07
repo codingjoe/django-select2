@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '12.x'
+          node-version: '22.x'
       - run: npm install -g standard
       - run: standard
 
