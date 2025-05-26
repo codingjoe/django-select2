@@ -255,8 +255,6 @@ class HeavySelect2Mixin:
         """
         super().__init__(attrs, choices)
 
-        self.uuid = str(uuid.uuid4())
-        self.field_id = signing.dumps(self.uuid)
         self.data_view = kwargs.pop("data_view", self.data_view)
         self.data_url = kwargs.pop("data_url", self.data_url)
 
@@ -275,6 +273,8 @@ class HeavySelect2Mixin:
 
     def build_attrs(self, base_attrs, extra_attrs=None):
         """Set select2's AJAX attributes."""
+        self.uuid = str(uuid.uuid4())
+        self.field_id = signing.dumps(self.uuid)
         default_attrs = {
             "data-ajax--url": self.get_url(),
             "data-ajax--cache": "true",

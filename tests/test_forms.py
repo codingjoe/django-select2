@@ -359,6 +359,17 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         widget = self.widget_cls(data_view="heavy_data_1")
         assert 'data-theme="classic"' in widget.render("name", None)
 
+    def test_cache_key_leak(self):
+        bob = self.widget_cls(data_url="/test/")
+        alice = self.widget_cls(data_url="/test/")
+        bob.render("name", "value")
+        bob_key_request_1 = bob._get_cache_key()
+        alice.render("name", "value")
+        assert bob._get_cache_key() != alice._get_cache_key()
+        bob.render("name", "value")
+        bob_key_request_2 = bob._get_cache_key()
+        assert bob_key_request_1 != bob_key_request_2
+
 
 class TestModelSelect2Mixin(TestHeavySelect2Mixin):
     form = forms.AlbumModelSelect2WidgetForm(initial={"primary_genre": 1})
