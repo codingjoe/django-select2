@@ -844,6 +844,49 @@ class TestAddressChainedSelect2Widget:
         )
         assert city2_container.text == ""
 
+    @pytest.mark.selenium
+    def test_dependent_fields_using_checkbox(
+        self, db, live_server, driver, cities
+    ):
+        driver.get(live_server + self.url)
+        (
+            country_container,
+            city_container,
+            city2_container,
+        ) = driver.find_elements(By.CSS_SELECTOR, ".select2-selection--single")
+
+        # selecting a country really does it
+        city_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located(
+                (By.CSS_SELECTOR, ".select2-results li")
+            )
+        )
+        city_option = driver.find_element(
+            By.CSS_SELECTOR, ".select2-results li"
+        )
+        city_name = city_option.text
+        city_option.click()
+        assert city_name == city_container.text
+
+        # check active to false
+        active_checkbox = driver.find_element(
+            By.ID, 'id_active'
+        )
+        active_checkbox.click()
+
+        # check the value in city
+        city_container.click()
+        WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located(
+                (By.CSS_SELECTOR, ".select2-results li")
+            )
+        )
+        city_option = driver.find_element(
+            By.CSS_SELECTOR, ".select2-results li"
+        )
+        assert city_option.text == "No results found"
+
 
 @pytest.fixture(
     name="widget",

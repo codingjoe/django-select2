@@ -35,7 +35,12 @@
             $.each(dependentFields, function (i, dependentField) {
               const nameIs = `[name=${dependentField}]`
               const nameEndsWith = `[name$=-${dependentField}]`
-              result[dependentField] = (findElement(nameIs) || findElement(nameEndsWith)).val()
+              const field = (findElement(nameIs) || findElement(nameEndsWith))
+              if (field.is(":checkbox")) {
+                result[dependentField] = field.prop("checked") ? "1" : "0"
+              } else {
+                result[dependentField] = field.val()
+              }
             })
           }
 
