@@ -209,7 +209,7 @@ class AddressChainedSelect2WidgetForm(forms.Form):
         label="City",
         widget=ModelSelect2Widget(
             search_fields=["name__icontains"],
-            dependent_fields={"country": "country"},
+            dependent_fields={"country": "country", "active": "active"},
             max_results=500,
             attrs={"data-minimum-input-length": 0},
         ),
@@ -225,6 +225,8 @@ class AddressChainedSelect2WidgetForm(forms.Form):
             attrs={"data-minimum-input-length": 0},
         ),
     )
+
+    active = forms.BooleanField(required=False, initial=True)
 
 
 class GroupieForm(forms.ModelForm):
