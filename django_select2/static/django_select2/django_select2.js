@@ -5,8 +5,8 @@
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(require('jquery'))
   } else {
-    // Browser globals
-    factory(jQuery || window.django.jQuery)
+    // Browser globals - prefer Django's jQuery to avoid conflicts
+    factory(window.django.jQuery || jQuery)
   }
 }(function ($) {
   'use strict'
