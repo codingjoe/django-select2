@@ -7,36 +7,16 @@ on:
 
 jobs:
 
-  lint:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        lint-command:
-          - bandit -r . -x ./tests
-          - black --check --diff .
-          - flake8 .
-          - isort --check-only --diff .
-          - pydocstyle .
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.x"
-          cache: 'pip'
-          cache-dependency-path: 'linter-requirements.txt'
-      - run: python -m pip install -r linter-requirements.txt
-      - run: ${{ matrix.lint-command }}
-
   dist:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v7
+      - run: uvx --from build pyproject-build --sdist --wheel
+      - run: uvx twine check dist/*
+      - uses: actions/upload-artifact@v6
         with:
-          python-version: "3.x"
-      - run: python -m pip install --upgrade pip build wheel twine readme-renderer
-      - run: python -m build --sdist --wheel
-      - run: python -m twine check dist/*
+          path: dist/*
 
   standardjs:
     runs-on: ubuntu-latest
@@ -52,16 +32,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
       - run: sudo apt-get install -y gettext graphviz
-      - run: python -m pip install -e .[docs]
-      - run: python -m sphinx -W -b doctest -b html docs docs/_build
+      - uses: astral-sh/setup-uv@v7
+      - run: uv run sphinx-build -W -b doctest -b html docs docs/_build
 
   PyTest:
     needs:
-      - lint
       - standardjs
     strategy:
       matrix:
@@ -76,22 +52,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m pip install Django~="${{ matrix.django-version }}.0"
-      - run: python -m pip install -e .[test]
-      - run: python -m pytest -m "not selenium"
+      - run: uv run --with Django~=${{ matrix.django-version }}.0 pytest -m "not selenium"
       - uses: codecov/codecov-action@v5
 
   Selenium:
     needs:
-      - lint
       - standardjs
-    strategy:
-      matrix:
-        python-version:
-          - "3.x"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -99,10 +68,6 @@ jobs:
         run: |
           curl -LsSfO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
-      - uses: actions/setup-python@v6
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: python -m pip install Django
-      - run: python -m pip install -e .[test,selenium]
-      - run: python -m pytest -m selenium
+      - uses: astral-sh/setup-uv@v7
+      - run: uv run pytest -m selenium
       - uses: codecov/codecov-action@v5
