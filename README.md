@@ -21,4 +21,4 @@ Custom autocomplete fields for [Django](https://www.djangoproject.com/).
 Documentation available at <https://django-select2.rtfd.io>.
 
 > [!NOTE]
-> Django\'s admin comes with builtin support for Select2 via the [autocomplete_fields](https://docs.djangoproject.com/en/stable/ref/contrib/admin/#django.contrib.admin.ModelAdmin.autocomplete_fields) feature.
+> Django's admin comes with builtin support for Select2 via the [autocomplete_fields](https://docs.djangoproject.com/en/stable/ref/contrib/admin/#django.contrib.admin.ModelAdmin.autocomplete_fields) feature.
