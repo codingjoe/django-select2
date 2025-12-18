@@ -25,12 +25,12 @@ def random_name(n):
     return "-".join([x.capitalize() for x in words])
 
 
-@pytest.fixture(scope="session")
-def driver():
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--headless=new")
+@pytest.fixture(scope="session", params=["Chrome", "Safari", "Firefox"])
+def driver(request):
+    options = getattr(webdriver, f"{request.param}Options")()
+    options.add_argument("--headless")
     try:
-        b = webdriver.Chrome(options=chrome_options)
+        b = getattr(webdriver, request.param)(options=options)
     except WebDriverException as e:
         pytest.skip(str(e))
     else:
