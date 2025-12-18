@@ -9,7 +9,7 @@ you have binary dependencies installed::
     # macOS
     brew install -y gettext graphviz google-chrome-stable
 
-You may ran the tests via::
+You may run the tests via::
 
     uv run pytest
 
