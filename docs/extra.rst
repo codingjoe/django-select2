@@ -37,7 +37,7 @@ Lets link two widgets via a *dependent_fields* dictionary. The key
 represents the name of the field in the form. The value represents the
 name of the field in the model (used in `queryset`).
 
-.. code:: python
+.. code-block:: python
     :emphasize-lines: 17
 
     class AddressForm(forms.Form):
@@ -71,7 +71,7 @@ select2 depending of his selection in another one.
 
 Customize the form in a manner:
 
-.. code:: python
+.. code-block:: python
     :emphasize-lines: 7
 
     class AddressForm(forms.Form):
@@ -112,7 +112,7 @@ which differs from widget field name `city`.
 Furthermore you may want to filter options on two or more select2
 selections (some code is dropped for clarity):
 
-.. code:: python
+.. code-block:: python
     :emphasize-lines: 14
 
     class SomeForm(forms.Form):
