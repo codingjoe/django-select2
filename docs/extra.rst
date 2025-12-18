@@ -38,7 +38,7 @@ represents the name of the field in the form. The value represents the
 name of the field in the model (used in `queryset`).
 
 .. code:: python
-   :emphasize-lines: 17
+    :emphasize-lines: 17
 
     class AddressForm(forms.Form):
         country = forms.ModelChoiceField(
@@ -72,7 +72,7 @@ select2 depending of his selection in another one.
 Customize the form in a manner:
 
 .. code:: python
-   :emphasize-lines: 7
+    :emphasize-lines: 7
 
     class AddressForm(forms.Form):
         country = forms.ModelChoiceField(
@@ -113,7 +113,7 @@ Furthermore you may want to filter options on two or more select2
 selections (some code is dropped for clarity):
 
 .. code:: python
-   :emphasize-lines: 14
+    :emphasize-lines: 14
 
     class SomeForm(forms.Form):
         field1 = forms.ModelChoiceField(
