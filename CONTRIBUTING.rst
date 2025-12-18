@@ -9,19 +9,13 @@ you have binary dependencies installed::
     # macOS
     brew install -y gettext graphviz google-chrome-stable
 
-To install the package and its dependencies for development
-including tests dependencies, please do:
+You may run the tests via::
 
-    python -m pip install -e .[test]
-
-You may ran the tests via::
-
-    python -m pytest
+    uv run pytest
 
 Documentation pull requests welcome. The Sphinx documentation can be compiled via::
 
-    python -m pip install -e .[docs]
-    python -m sphinx -W -b doctest -b html docs docs/_build
+    uv run sphinx-build -W -b doctest -b html docs docs/_build/html
 
 Bug reports welcome, even more so if they include a correct patch.  Much
 more so if you start your patch by adding a failing unit test, and correct

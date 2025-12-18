@@ -2,7 +2,7 @@ import os
 import pathlib
 import sys
 
-from pkg_resources import get_distribution
+from django_select2 import __version__ as release
 
 BASE_DIR = pathlib.Path(__file__).resolve(strict=True).parent.parent
 
@@ -20,11 +20,8 @@ sys.path.insert(0, str(BASE_DIR))
 
 
 project = "Django-Select2"
-author = "Johannes Hoppe"
-copyright = "2017-2020, Johannes Hoppe"
-release = get_distribution("django_select2").version
+author = "Johannes Maron"
 version = ".".join(release.split(".")[:2])
-
 
 master_doc = "index"  # default in Sphinx v2
 

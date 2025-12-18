@@ -30,7 +30,7 @@ Here are our two models:
 Customizing a Form
 ``````````````````
 
-Lets link two widgets via a *dependent_fields* dictionary. The key represents the name of 
+Lets link two widgets via a *dependent_fields* dictionary. The key represents the name of
 the field in the form. The value represents the name of the field in the model (used in `queryset`).
 
 .. code-block:: python
@@ -122,4 +122,3 @@ Furthermore you may want to filter options on two or more select2 selections (so
                 dependent_fields={'field1': 'field1', 'field2': 'field2'},
             )
         )
-

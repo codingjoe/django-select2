@@ -6,20 +6,17 @@ labels:
 assignees:
   - codingjoe
 body:
-
   - type: markdown
     attributes:
       value: |
         Thank you for taking the time to report a bug.
         Please fill in as much of the template below as you're able.
-
   - type: markdown
     attributes:
       value: |
         ## Security issues
         Please do not report security issues here.
         Instead, disclose them as described in our [security policy](https://github.com/codingjoe/django-select2/security).
-
   - type: textarea
     id: bug-description
     attributes:
@@ -28,7 +25,6 @@ body:
       placeholder: I found a bug
     validations:
       required: true
-
   - type: textarea
     id: bug-steps
     attributes:
@@ -41,7 +37,6 @@ body:
         4. See error
     validations:
       required: true
-
   - type: textarea
     id: bug-expected
     attributes:

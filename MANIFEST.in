@@ -2,4 +2,3 @@ include django_select2/static/django_select2/django_select2.js
 include django_select2/static/django_select2/django_select2.css
 prune .github
 exclude .*
-

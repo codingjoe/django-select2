@@ -35,14 +35,15 @@ dependencies = [
   "django-appconf>=0.6.0"
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
+dev = [
+  { include-group = "test" },
+  { include-group = "docs" },
+]
 test = [
   "pytest",
   "pytest-cov",
   "pytest-django",
-  "selenium",
-]
-selenium = [
   "selenium",
 ]
 docs = [

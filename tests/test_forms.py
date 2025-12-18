@@ -271,9 +271,7 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
             in not_required_field.widget.render("primary_genre", 1)
             or '<option value="1" selected>One</option>'
             in not_required_field.widget.render("primary_genre", 1)
-        ), not_required_field.widget.render(
-            "primary_genre", 1
-        )
+        ), not_required_field.widget.render("primary_genre", 1)
 
     def test_many_selected_option(self, db, genres):
         field = HeavySelect2MultipleWidgetForm().fields["genres"]
@@ -296,9 +294,9 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
             pk=2, value="Two"
         )
 
-        assert (
-            selected_option in widget_output or selected_option_a in widget_output
-        ), widget_output
+        assert selected_option in widget_output or selected_option_a in widget_output, (
+            widget_output
+        )
         assert selected_option2 in widget_output or selected_option2a in widget_output
 
     @pytest.mark.selenium
@@ -412,9 +410,9 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
             pk=genre2.pk, value=force_str(genre2)
         )
 
-        assert (
-            selected_option in widget_output or selected_option_a in widget_output
-        ), widget_output
+        assert selected_option in widget_output or selected_option_a in widget_output, (
+            widget_output
+        )
         assert unselected_option not in widget_output
 
     def test_selected_option_label_from_instance(self, db, genres):
