@@ -61,6 +61,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: uv run --with Django~=${{ matrix.django-version }}.0 pytest -m "not selenium"
       - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: python-${{ matrix.python-version }}
   Selenium:
     needs:
       - standardjs
@@ -74,3 +77,6 @@ jobs:
       - uses: astral-sh/setup-uv@v7
       - run: uv run pytest -m selenium
       - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: selenium
