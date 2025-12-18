@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="320" font-family="Segoe UI, system-ui, sans-serif" viewBox="0 0 1280 640">
+  <circle cx="260" cy="320" r="200" fill="#f1fff7"/>
+    <g transform="scale(12.5) translate(9 13.5)" fill="none" stroke="#092e20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-click"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12l3 0" /><path d="M12 3l0 3" /><path d="M7.8 7.8l-2.2 -2.2" /><path d="M16.2 7.8l2.2 -2.2" /><path d="M7.8 16.2l-2.2 2.2" /><path d="M12 12l9 3l-4 2l-2 4l-3 -9" /></g>
+  <text x="243" y="90" font-size="64" fill="#f1fff7" font-weight="bold" transform="matrix(1.6 0 0 1.6 120 120)">
+    Django
+  </text>
+  <text x="240" y="174" font-size="92" fill="#c9d1d9" font-weight="bold" transform="matrix(1.6 0 0 1.6 120 120)">
+    Select2
+  </text>
+  <text x="244" y="210" font-size="20" fill="#c9d1d9" font-style="italic" transform="matrix(1.6 0 0 1.6 120 120)">
+    Custom autocomplete fields for Django
+  </text>
+</svg>

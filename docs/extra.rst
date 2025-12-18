@@ -1,37 +1,41 @@
-Extra
-=====
+#######
+ Extra
+#######
 
-Chained select2
----------------
+*****************
+ Chained select2
+*****************
 
-Suppose you have an address form where a user should choose a Country and a City.
-When the user selects a country we want to show only cities belonging to that country.
-So the one selector depends on another one.
+Suppose you have an address form where a user should choose a Country
+and a City. When the user selects a country we want to show only cities
+belonging to that country. So the one selector depends on another one.
 
 .. note::
-    Does not work with the 'light' version (django_select2.forms.Select2Widget).
+
+   Does not work with the 'light' version
+   (django_select2.forms.Select2Widget).
 
 Models
-``````
+======
 
 Here are our two models:
 
-.. code-block:: python
+.. code:: python
 
-    class Country(models.Model):
-        name = models.CharField(max_length=255)
+   class Country(models.Model):
+       name = models.CharField(max_length=255)
 
 
-    class City(models.Model):
-        name = models.CharField(max_length=255)
-        country = models.ForeignKey('Country', related_name="cities")
-
+   class City(models.Model):
+       name = models.CharField(max_length=255)
+       country = models.ForeignKey("Country", related_name="cities")
 
 Customizing a Form
-``````````````````
+==================
 
-Lets link two widgets via a *dependent_fields* dictionary. The key represents the name of
-the field in the form. The value represents the name of the field in the model (used in `queryset`).
+Lets link two widgets via a *dependent_fields* dictionary. The key
+represents the name of the field in the form. The value represents the
+name of the field in the model (used in `queryset`).
 
 .. code-block:: python
     :emphasize-lines: 17
@@ -57,12 +61,13 @@ the field in the form. The value represents the name of the field in the model (
             )
         )
 
+************************
+ Interdependent select2
+************************
 
-Interdependent select2
-----------------------
-
-Also you may want not to restrict the user to which field should be selected first.
-Instead you want to suggest to the user options for any select2 depending of his selection in another one.
+Also you may want not to restrict the user to which field should be
+selected first. Instead you want to suggest to the user options for any
+select2 depending of his selection in another one.
 
 Customize the form in a manner:
 
@@ -89,19 +94,23 @@ Customize the form in a manner:
             )
         )
 
-Take attention to country's dependent_fields. The value of 'city' is 'cities' because of
-related name used in a filter condition `cities` which differs from widget field name `city`.
+Take attention to country's dependent_fields. The value of 'city' is
+'cities' because of related name used in a filter condition `cities`
+which differs from widget field name `city`.
 
 .. caution::
-    Be aware of using interdependent select2 in parent-child relation.
-    When a child is selected, you are restricted to change parent (only one value is available).
-    Probably you should let the user reset the child first to release parent select2.
 
+   Be aware of using interdependent select2 in parent-child relation.
+   When a child is selected, you are restricted to change parent (only
+   one value is available). Probably you should let the user reset the
+   child first to release parent select2.
 
-Multi-dependent select2
------------------------
+*************************
+ Multi-dependent select2
+*************************
 
-Furthermore you may want to filter options on two or more select2 selections (some code is dropped for clarity):
+Furthermore you may want to filter options on two or more select2
+selections (some code is dropped for clarity):
 
 .. code-block:: python
     :emphasize-lines: 14

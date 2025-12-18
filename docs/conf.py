@@ -24,6 +24,7 @@ author = "Johannes Maron"
 version = ".".join(release.split(".")[:2])
 
 master_doc = "index"  # default in Sphinx v2
+html_theme = "furo"
 
 
 extensions = [
