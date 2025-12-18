@@ -53,7 +53,8 @@ class TestSelect2Mixin:
 
         # Regression test for #163
         widget = Select2Widget()
-        assert widget.i18n_name == translation.get_language()
+        with translation.override("en"):
+            assert widget.i18n_name == "en"
         with translation.override("de"):
             assert widget.i18n_name == "de"
 

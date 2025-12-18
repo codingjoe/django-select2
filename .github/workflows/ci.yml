@@ -97,7 +97,7 @@ jobs:
       - uses: actions/checkout@v6
       - name: Install Selenium
         run: |
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          curl -LsSfO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
       - uses: actions/setup-python@v6
         with:
