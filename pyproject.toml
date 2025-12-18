@@ -7,7 +7,7 @@ name = "django-select2"
 authors = [
   { name = "Johannes Maron", email = "johannes@maron.family" },
 ]
-readme = "README.rst"
+readme = "README.md"
 license = { file = "LICENSE" }
 keywords = ["Django", "select2", "autocomplete", "typeahead"]
 dynamic = ["version", "description"]
@@ -48,6 +48,7 @@ test = [
 ]
 docs = [
   "sphinx",
+  "furo",
 ]
 
 [project.urls]

@@ -1,4 +1,13 @@
-.. include:: ../README.rst
+Django Select2
+==============
+
+.. image:: https://github.com/codingjoe/django-select2/raw/main/images/logo-light.svg
+   :align: center
+   :class: only-light
+
+.. image:: https://github.com/codingjoe/django-select2/raw/main/images/logo-dark.svg
+   :align: center
+   :class: only-dark
 
 Installation
 ------------
