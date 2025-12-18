@@ -64,19 +64,19 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: python-${{ matrix.python-version }}
-  Selenium:
+  selenium:
     needs:
-      - standardjs
-    runs-on: ubuntu-latest
+      - PyTest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
-      - name: Install Selenium
-        run: |
-          curl -LsSfO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
       - uses: astral-sh/setup-uv@v7
       - run: uv run pytest -m selenium
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: selenium
+          flags: selenium-${{ matrix.os }}
