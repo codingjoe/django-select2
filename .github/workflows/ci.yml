@@ -95,13 +95,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Install Chrome
-        run: sudo apt-get install -y google-chrome-stable
       - name: Install Selenium
         run: |
-          mkdir bin
-          curl -O https://chromedriver.storage.googleapis.com/`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip -d bin
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
