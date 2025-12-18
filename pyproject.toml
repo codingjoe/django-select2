@@ -71,7 +71,7 @@ write_to = "django_select2/_version.py"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--cov --tb=short -rxs"
+addopts = "--cov --cov-report=xml --cov-report=term --tb=short -rxs"
 testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
 filterwarnings = ["ignore::PendingDeprecationWarning", "error::RuntimeWarning"]
@@ -81,6 +81,7 @@ source = ["django_select2"]
 
 [tool.coverage.report]
 show_missing = true
+skip_covered = true
 
 [tool.isort]
 atomic = true
