@@ -39,6 +39,10 @@ repos:
     rev: v0.20.0
     hooks:
       - id: yamlfmt
+  - repo: https://github.com/dzhu/rstfmt
+    rev: v0.0.14
+    hooks:
+      - id: rstfmt
 ci:
   autoupdate_schedule: weekly
   skip:

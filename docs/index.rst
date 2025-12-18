@@ -1,228 +1,239 @@
-Django Select2
-==============
+################
+ Django Select2
+################
 
 .. image:: https://github.com/codingjoe/django-select2/raw/main/images/logo-light.svg
    :align: center
+   :alt: Django Select2: Custom autocomplete fields for Django
    :class: only-light
 
 .. image:: https://github.com/codingjoe/django-select2/raw/main/images/logo-dark.svg
    :align: center
+   :alt: Django Select2: Custom autocomplete fields for Django
    :class: only-dark
 
-Installation
-------------
+**************
+ Installation
+**************
 
-Install ``django-select2``::
+Install ``django-select2``:
 
-    python3 -m pip install django-select2
+.. code::
 
-Add ``django_select2`` to your ``INSTALLED_APPS`` in your project settings.
-Since version 8, please ensure that Django's admin app is enabled too:
+   python3 -m pip install django-select2
 
-.. code-block:: python
+Add ``django_select2`` to your ``INSTALLED_APPS`` in your project
+settings. Since version 8, please ensure that Django's admin app is
+enabled too:
 
-    INSTALLED_APPS = [
-        # other django apps…
-        'django.contrib.admin',
-        # other 3rd party apps…
-        'django_select2',
-    ]
+.. code:: python
+
+   INSTALLED_APPS = [
+       # other django apps…
+       "django.contrib.admin",
+       # other 3rd party apps…
+       "django_select2",
+   ]
 
 Add ``django_select`` to your URL root configuration:
 
-.. code-block:: python
+.. code:: python
 
-    from django.urls import include, path
+   from django.urls import include, path
 
-    urlpatterns = [
-        # other patterns…
-        path("select2/", include("django_select2.urls")),
-        # other patterns…
-    ]
-
+   urlpatterns = [
+       # other patterns…
+       path("select2/", include("django_select2.urls")),
+       # other patterns…
+   ]
 
 The :ref:`Model` -widgets require a **persistent** cache backend across
-all application servers. This is because the widget needs to store
-meta data to be able to fetch the results based on the user input.
+all application servers. This is because the widget needs to store meta
+data to be able to fetch the results based on the user input.
 
 **This means that the** :class:`.DummyCache` **backend will not work!**
 
 The default cache backend is :class:`.LocMemCache`, which is persistent
-across a single node. For projects with a single application server
-this will work fine, however you will run into issues when
-you scale up into multiple servers.
+across a single node. For projects with a single application server this
+will work fine, however you will run into issues when you scale up into
+multiple servers.
 
-Below is an example setup using Redis, which is a solution that
-works for multi-server setups:
+Below is an example setup using Redis, which is a solution that works
+for multi-server setups:
 
-Make sure you have a Redis server up and running::
+Make sure you have a Redis server up and running:
 
-    # Debian
-    sudo apt-get install redis-server
+.. code::
 
-    # macOS
-    brew install redis
+   # Debian
+   sudo apt-get install redis-server
 
-    # install Redis python client
-    python3 -m pip install django-redis
+   # macOS
+   brew install redis
+
+   # install Redis python client
+   python3 -m pip install django-redis
 
 Next, add the cache configuration to your ``settings.py`` as follows:
 
-.. code-block:: python
+.. code:: python
 
-    CACHES = {
-        # … default cache config and others
-        "select2": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "redis://127.0.0.1:6379/2",
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            }
-        }
-    }
+   CACHES = {
+       # … default cache config and others
+       "select2": {
+           "BACKEND": "django_redis.cache.RedisCache",
+           "LOCATION": "redis://127.0.0.1:6379/2",
+           "OPTIONS": {
+               "CLIENT_CLASS": "django_redis.client.DefaultClient",
+           },
+       }
+   }
 
-    # Tell select2 which cache configuration to use:
-    SELECT2_CACHE_BACKEND = "select2"
+   # Tell select2 which cache configuration to use:
+   SELECT2_CACHE_BACKEND = "select2"
 
 .. note::
-    A custom timeout for your cache backend, will serve as an indirect session limit.
-    Auto select fields will stop working after, once the cache has expired.
-    It's recommended to use a dedicated cache database with an adequate
-    cache replacement policy such as LRU, FILO, etc.
 
+   A custom timeout for your cache backend, will serve as an indirect
+   session limit. Auto select fields will stop working after, once the
+   cache has expired. It's recommended to use a dedicated cache database
+   with an adequate cache replacement policy such as LRU, FILO, etc.
 
-External Dependencies
----------------------
+***********************
+ External Dependencies
+***********************
 
--  jQuery is not included in the package since it is
-   expected that in most scenarios this would already be available.
+-  jQuery is not included in the package since it is expected that in
+   most scenarios this would already be available.
 
-
-Quick Start
------------
+*************
+ Quick Start
+*************
 
 Here is a quick example to get you started:
 
-First make sure you followed the installation instructions above.
-Once everything is setup, let's start with a simple example.
+First make sure you followed the installation instructions above. Once
+everything is setup, let's start with a simple example.
 
 We have the following model:
 
-.. code-block:: python
+.. code:: python
 
-    # models.py
-    from django.conf import settings
-    from django.db import models
+   # models.py
+   from django.conf import settings
+   from django.db import models
 
 
-    class Book(models.Model):
-        author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-        co_authors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='co_authored_by')
-
+   class Book(models.Model):
+       author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+       co_authors = models.ManyToManyField(
+           settings.AUTH_USER_MODEL, related_name="co_authored_by"
+       )
 
 Next, we create a model form with custom Select2 widgets.
 
-.. code-block:: python
+.. code:: python
 
-    # forms.py
-    from django import forms
-    from django_select2 import forms as s2forms
+   # forms.py
+   from django import forms
+   from django_select2 import forms as s2forms
 
-    from . import models
-
-
-    class AuthorWidget(s2forms.ModelSelect2Widget):
-        search_fields = [
-            "username__icontains",
-            "email__icontains",
-        ]
+   from . import models
 
 
-    class CoAuthorsWidget(s2forms.ModelSelect2MultipleWidget):
-        search_fields = [
-            "username__icontains",
-            "email__icontains",
-        ]
+   class AuthorWidget(s2forms.ModelSelect2Widget):
+       search_fields = [
+           "username__icontains",
+           "email__icontains",
+       ]
 
 
-    class BookForm(forms.ModelForm):
-        class Meta:
-            model = models.Book
-            fields = "__all__"
-            widgets = {
-                "author": AuthorWidget,
-                "co_authors": CoAuthorsWidget,
-            }
+   class CoAuthorsWidget(s2forms.ModelSelect2MultipleWidget):
+       search_fields = [
+           "username__icontains",
+           "email__icontains",
+       ]
+
+
+   class BookForm(forms.ModelForm):
+       class Meta:
+           model = models.Book
+           fields = "__all__"
+           widgets = {
+               "author": AuthorWidget,
+               "co_authors": CoAuthorsWidget,
+           }
 
 A simple class based view will do, to render your form:
 
-.. code-block:: python
+.. code:: python
 
-    # views.py
-    from django.views import generic
+   # views.py
+   from django.views import generic
 
-    from . import forms, models
+   from . import forms, models
 
 
-    class BookCreateView(generic.CreateView):
-        model = models.Book
-        form_class = forms.BookForm
-        success_url = "/"
+   class BookCreateView(generic.CreateView):
+       model = models.Book
+       form_class = forms.BookForm
+       success_url = "/"
 
 Make sure to add the view to your ``urls.py``:
 
-.. code-block:: python
+.. code:: python
 
-    # urls.py
-    from django.urls import include, path
+   # urls.py
+   from django.urls import include, path
 
-    from . import views
+   from . import views
 
-    urlpatterns = [
-        # … other patterns
-        path("select2/", include("django_select2.urls")),
-        # … other patterns
-        path("book/create", views.BookCreateView.as_view(), name="book-create"),
-    ]
+   urlpatterns = [
+       # … other patterns
+       path("select2/", include("django_select2.urls")),
+       # … other patterns
+       path("book/create", views.BookCreateView.as_view(), name="book-create"),
+   ]
 
+Finally, we need a little template,
+``myapp/templates/myapp/book_form.html``
 
-Finally, we need a little template, ``myapp/templates/myapp/book_form.html``
+.. code:: HTML
 
-.. code-block:: HTML
-
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <title>Create Book</title>
-        {{ form.media.css }}
-        <style>
-            input, select {width: 100%}
-        </style>
-    </head>
-    <body>
-        <h1>Create a new Book</h1>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit">
-        </form>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        {{ form.media.js }}
-    </body>
-    </html>
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <title>Create Book</title>
+       {{ form.media.css }}
+       <style>
+           input, select {width: 100%}
+       </style>
+   </head>
+   <body>
+       <h1>Create a new Book</h1>
+       <form method="POST">
+           {% csrf_token %}
+           {{ form.as_p }}
+           <input type="submit">
+       </form>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+       {{ form.media.js }}
+   </body>
+   </html>
 
 Done - enjoy the wonders of Select2!
 
-
-Changelog
----------
+***********
+ Changelog
+***********
 
 See `Github releases`_.
 
-.. _Github releases: https://github.com/codingjoe/django-select2/releases
+.. _github releases: https://github.com/codingjoe/django-select2/releases
 
-All Contents
-============
+##############
+ All Contents
+##############
 
 Contents:
 
@@ -234,9 +245,10 @@ Contents:
    extra
    CONTRIBUTING
 
-Indices and tables
-==================
+####################
+ Indices and tables
+####################
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+-  :ref:`genindex`
+-  :ref:`modindex`
+-  :ref:`search`
