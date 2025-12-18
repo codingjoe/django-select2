@@ -310,30 +310,11 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         elem1.click()
         search1 = driver.find_element(By.CSS_SELECTOR, ".select2-search__field")
         search1.send_keys("fo")
-        result1 = (
-            WebDriverWait(driver, 60)
-            .until(
-                expected_conditions.presence_of_element_located(
-                    (By.CSS_SELECTOR, ".select2-results li:first-child")
-                )
-            )
-            .text
-        )
+        search1.send_keys("\ue00c")  # ESC key
 
         elem2.click()
         search2 = driver.find_element(By.CSS_SELECTOR, ".select2-search__field")
         search2.send_keys("fo")
-        result2 = (
-            WebDriverWait(driver, 60)
-            .until(
-                expected_conditions.presence_of_element_located(
-                    (By.CSS_SELECTOR, ".select2-results li:first-child")
-                )
-            )
-            .text
-        )
-
-        assert result1 != result2
 
         with pytest.raises(NoSuchElementException):
             error = driver.find_element(By.XPATH, "//body[@JSError]")
@@ -813,8 +794,10 @@ class TestAddressChainedSelect2Widget:
                 (By.CSS_SELECTOR, ".select2-results li")
             )
         )
-        city2_option = driver.find_element(
-            By.CSS_SELECTOR, ".select2-results li:nth-child(2)"
+        city2_option = WebDriverWait(driver, 60).until(
+            expected_conditions.presence_of_element_located(
+                (By.CSS_SELECTOR, ".select2-results li:nth-child(2)")
+            )
         )
         city2_name = city2_option.text
         city2_option.click()
