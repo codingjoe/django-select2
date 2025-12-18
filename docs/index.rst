@@ -1,7 +1,3 @@
-################
- Django Select2
-################
-
 .. image:: https://github.com/codingjoe/django-select2/raw/main/images/logo-light.svg
    :align: center
    :alt: Django Select2: Custom autocomplete fields for Django
@@ -11,6 +7,19 @@
    :align: center
    :alt: Django Select2: Custom autocomplete fields for Django
    :class: only-dark
+
+################
+ Django Select2
+################
+
+*Custom autocomplete fields for Django.*
+
+`Documentation`_ | `Issues`_ | `Changelog`_ | `Funding`_ 💚
+
+.. _documentation: https://django-select2.rtfd.io/
+.. _issues: https://github.com/codingjoe/django-select2/issues/new/choose
+.. _changelog: https://github.com/codingjoe/django-select2/releases
+.. _funding: https://github.com/sponsors/codingjoe
 
 **************
  Installation

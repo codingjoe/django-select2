@@ -5,7 +5,10 @@
     <img alt="Django Select2: Custom autocomplete fields for Django" src="https://github.com/codingjoe/django-select2/raw/main/images/logo-light.svg">
   </picture>
 <br>
-  <a href="https://django-select2.rtfd.io">Documentation</a>
+  <a href="https://django-select2.rtfd.io">Documentation</a> |
+  <a href="https://github.com/codingjoe/django-select2/issues/new/choose">Issues</a> |
+  <a href="https://github.com/codingjoe/django-select2/releases">Changelog</a> |
+  <a href="https://github.com/sponsors/codingjoe">Funding</a> 💚
 </p>
 
 # Django-Select2
