@@ -43,6 +43,10 @@ repos:
     rev: v1.0.2
     hooks:
       - id: sphinx-lint
+  - repo: https://github.com/codingjoe/esupgrade
+    rev: 2025.8.0
+    hooks:
+      - id: esupgrade
 ci:
   autoupdate_schedule: weekly
   skip:

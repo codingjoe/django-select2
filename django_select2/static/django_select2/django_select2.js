@@ -1,23 +1,23 @@
 /* global define, jQuery */
-(function (factory) {
+((factory => {
   if (typeof define === 'function' && define.amd) {
     define(['jquery'], factory)
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(require('jquery'))
   } else {
     // Browser globals - prefer Django's jQuery to avoid conflicts
-    factory(window.django?.jQuery || jQuery)
+    factory(globalThis.django?.jQuery || jQuery)
   }
-}(function ($) {
+})($ => {
   'use strict'
-  const init = function ($element, options) {
+  const init = ($element, options) => {
     $element.select2(options)
   }
 
-  const initHeavy = function ($element, options) {
+  function initHeavy ($element, options) {
     const settings = $.extend({
       ajax: {
-        data: function (params) {
+        data: params => {
           const result = {
             term: params.term,
             page: params.page,
@@ -26,13 +26,13 @@
 
           let dependentFields = $element.data('select2-dependent-fields')
           if (dependentFields) {
-            const findElement = function (selector) {
+            function findElement (selector) {
               const result = $(selector, $element.closest(`:has(${selector})`))
               if (result.length > 0) return result
               else return null
             }
             dependentFields = dependentFields.trim().split(/\s+/)
-            $.each(dependentFields, function (i, dependentField) {
+            $.each(dependentFields, (i, dependentField) => {
               const nameIs = `[name=${dependentField}]`
               const nameEndsWith = `[name$=-${dependentField}]`
               result[dependentField] = (findElement(nameIs) || findElement(nameEndsWith)).val()
@@ -41,7 +41,7 @@
 
           return result
         },
-        processResults: function (data, page) {
+        processResults: (data, page) => {
           return {
             results: data.results,
             pagination: {
@@ -57,16 +57,16 @@
 
   $.fn.djangoSelect2 = function (options) {
     const settings = $.extend({}, options)
-    $.each(this, function (i, element) {
+    $.each(this, (i, element) => {
       const $element = $(element)
       if ($element.hasClass('django-select2-heavy')) {
         initHeavy($element, settings)
       } else {
         init($element, settings)
       }
-      $element.on('select2:select', function (e) {
+      $element.on('select2:select', e => {
         const name = $(e.currentTarget).attr('name')
-        $('[data-select2-dependent-fields~=' + name + ']').each(function () {
+        $(`[data-select2-dependent-fields~=${name}]`).each(function () {
           $(this).val('').trigger('change')
         })
       })
@@ -74,7 +74,7 @@
     return this
   }
 
-  $(function () {
+  $(() => {
     $('.django-select2').not('[name*=__prefix__]').djangoSelect2()
 
     document.addEventListener('formset:added', (event) => {
