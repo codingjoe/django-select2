@@ -59,6 +59,7 @@ class City(models.Model):
     country = models.ForeignKey(
         "Country", related_name="cities", on_delete=models.CASCADE
     )
+    active = models.BooleanField(default=True, blank=True)
 
     class Meta:
         ordering = ("name",)
