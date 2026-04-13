@@ -34,7 +34,7 @@ classifiers = [
 requires-python = ">=3.10"
 dependencies = [
   "django>=4.2",
-  "django-appconf>=0.6.0"
+  "django-appconf>=1.2.0"
 ]
 
 [dependency-groups]
