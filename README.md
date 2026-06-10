@@ -21,7 +21,7 @@ Custom autocomplete fields for [Django](https://www.djangoproject.com/).
 
 ## Sponsors
 
-[![Sponsors](https://django.the-box.sh/sponsors/codingjoe/django-select2.svg)](https://github.com/sponsors/codingjoe)
+[![Sponsors](https://sponsor.pics/codingjoe/django-select2.svg)](https://github.com/sponsors/codingjoe)
 
 ## Documentation
 
