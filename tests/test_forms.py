@@ -160,8 +160,6 @@ class TestSelect2Mixin:
             "django_select2/django_select2.js",
         )
 
-        pytest.importorskip("django", minversion="2.0.4")
-
         translation.activate("zh-hans")
         assert tuple(Select2Widget().media._js) == (
             "admin/js/vendor/select2/select2.full.min.js",
