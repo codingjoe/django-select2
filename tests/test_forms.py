@@ -460,17 +460,11 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         not_required_field = self.form.fields["primary_genre"]
         assert not_required_field.required is False
         widget_output = not_required_field.widget.render("primary_genre", genre.pk)
-        selected_option = (
-            '<option value="{pk}" selected="selected">{value}</option>'.format(
-                pk=genre.pk, value=force_str(genre)
-            )
+        selected_option = f'<option value="{genre.pk}" selected="selected">{force_str(genre)}</option>'
+        selected_option_a = (
+            f'<option value="{genre.pk}" selected>{force_str(genre)}</option>'
         )
-        selected_option_a = '<option value="{pk}" selected>{value}</option>'.format(
-            pk=genre.pk, value=force_str(genre)
-        )
-        unselected_option = '<option value="{pk}">{value}</option>'.format(
-            pk=genre2.pk, value=force_str(genre2)
-        )
+        unselected_option = f'<option value="{genre2.pk}">{force_str(genre2)}</option>'
 
         assert selected_option in widget_output or selected_option_a in widget_output, (
             widget_output
@@ -487,12 +481,8 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
 
         def get_selected_options(genre):
             return (
-                '<option value="{pk}" selected="selected">{value}</option>'.format(
-                    pk=genre.pk, value=force_str(genre)
-                ),
-                '<option value="{pk}" selected>{value}</option>'.format(
-                    pk=genre.pk, value=force_str(genre)
-                ),
+                f'<option value="{genre.pk}" selected="selected">{force_str(genre)}</option>',
+                f'<option value="{genre.pk}" selected>{force_str(genre)}</option>',
             )
 
         assert all(o not in widget_output for o in get_selected_options(genre))
