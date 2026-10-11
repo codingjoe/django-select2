@@ -62,6 +62,29 @@ write_to = "django_select2/_version.py"
 [tool.flit.module]
 name = "django_select2"
 
+[tool.ruff.lint]
+extend-select = [
+  "C90",
+  "D",
+  "D213",
+  "DJ",
+  "E",
+  "G",
+  "N",
+  "PERF",
+  "PT",
+  "PTH",
+  "RET",
+  "S",
+  "SIM",
+  "SLOT",
+  "T20",
+  "TRY",
+  "UP",
+  "W",
+]
+ignore = [ "D1", "D203", "D212", "E501", "RUF01" ]
+
 [tool.isort]
 atomic = true
 line_length = 88
