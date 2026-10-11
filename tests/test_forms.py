@@ -32,6 +32,109 @@ from tests.testapp.forms import (
 )
 from tests.testapp.models import Artist, City, Country, Genre, Groupie
 
+SELECT2_SELECTION_SELECTOR = ".select2-selection"
+SELECT2_OPTION_SELECTOR = ".select2-results li"
+SELECT2_LOADING_SELECTOR = ".loading-results"
+
+
+class Select2Field:
+    """A select2 form field in a rendered page."""
+
+    def __init__(self, driver, index):
+        self.driver = driver
+        self.index = index
+
+    def click(self):
+        """Click the field to open its dropdown."""
+        self._retry_on_stale_element(lambda: self._get_selection().click())
+
+    def get_text(self):
+        """Return the selected text of the field."""
+        return self._retry_on_stale_element(lambda: self._get_selection().text)
+
+    def wait_for_option_texts(self, timeout_secs=60):
+        """Return the texts of the options of the open dropdown.
+
+        django-select2 keeps the options of the previous query rendered until
+        the new results arrive, so callers must wait for the dropdown to finish
+        loading before they read or click an option.
+        """
+
+        def option_texts(driver):
+            options = driver.find_elements(By.CSS_SELECTOR, SELECT2_OPTION_SELECTOR)
+            return {option.text for option in options}
+
+        return self._wait_until(option_texts, timeout_secs)
+
+    def click_option(self, position):
+        """Click the option at 1-based ``position`` of the open dropdown.
+
+        Wait for the dropdown to finish loading, then return the text of the
+        option, captured before the dropdown closes.
+        """
+
+        def click_and_get_text():
+            option = self._wait_until(
+                expected_conditions.element_to_be_clickable(
+                    (
+                        By.CSS_SELECTOR,
+                        f"{SELECT2_OPTION_SELECTOR}:nth-child({position})",
+                    )
+                )
+            )
+            text = option.text
+            option.click()
+            return text
+
+        return self._retry_on_stale_element(click_and_get_text)
+
+    def _get_selection(self):
+        """Return the selection element of the field."""
+
+        def selection_is_present(driver):
+            selections = driver.find_elements(
+                By.CSS_SELECTOR, SELECT2_SELECTION_SELECTOR
+            )
+            if len(selections) > self.index:
+                return selections[self.index]
+            return False
+
+        return self._wait_until(selection_is_present)
+
+    def _wait_until(self, predicate, timeout_secs=60):
+        """Return the first truthy value of ``predicate``.
+
+        Run the predicate once the open dropdown has finished loading, since
+        select2 prepends a loading placeholder while it fetches results and
+        keeps the previous options rendered until the new ones arrive. Retry
+        while elements are replaced, which invalidates held references.
+        """
+
+        def loaded(driver):
+            if driver.find_elements(By.CSS_SELECTOR, SELECT2_LOADING_SELECTOR):
+                return False
+            return predicate(driver)
+
+        return WebDriverWait(
+            self.driver,
+            timeout_secs,
+            ignored_exceptions=(NoSuchElementException, StaleElementReferenceException),
+        ).until(loaded)
+
+    @staticmethod
+    def _retry_on_stale_element(interaction, attempts=3):
+        """Run ``interaction``, retrying while select2 replaces the element.
+
+        django-select2 clears dependent fields by replacing their DOM nodes,
+        so elements looked up before such a change become stale.
+        """
+        for attempt in range(attempts):
+            try:
+                return interaction()
+            except StaleElementReferenceException:
+                if attempt == attempts - 1:
+                    raise
+
 
 class TestSelect2Mixin:
     url = reverse("select2_widget")
@@ -99,14 +202,11 @@ class TestSelect2Mixin:
     @pytest.mark.selenium
     def test_selecting(self, db, live_server, driver):
         driver.get(live_server + self.url)
+        field = Select2Field(driver, 0)
         with pytest.raises(NoSuchElementException):
             driver.find_element(By.CSS_SELECTOR, ".select2-results")
-        elem = driver.find_element(By.CSS_SELECTOR, ".select2-selection")
-        elem.click()
-        results = driver.find_element(By.CSS_SELECTOR, ".select2-results")
-        assert results.is_displayed() is True
-        elem = results.find_element(By.CSS_SELECTOR, ".select2-results__option")
-        elem.click()
+        field.click()
+        field.click_option(1)
 
         with pytest.raises(NoSuchElementException):
             error = driver.find_element(By.XPATH, "//body[@JSError]")
@@ -306,14 +406,12 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         with pytest.raises(NoSuchElementException):
             driver.find_element(By.CSS_SELECTOR, ".select2-results")
 
-        elem1, elem2 = driver.find_elements(By.CSS_SELECTOR, ".select2-selection")
-
-        elem1.click()
+        Select2Field(driver, 0).click()
         search1 = driver.find_element(By.CSS_SELECTOR, ".select2-search__field")
         search1.send_keys("fo")
         search1.send_keys("\ue00c")  # ESC key
 
-        elem2.click()
+        Select2Field(driver, 1).click()
         search2 = driver.find_element(By.CSS_SELECTOR, ".select2-search__field")
         search2.send_keys("fo")
 
@@ -679,85 +777,6 @@ class TestHeavySelect2MultipleWidget:
         assert result_title == "One"
 
 
-SELECT2_CONTAINER_SELECTOR = ".select2-selection--single"
-SELECT2_OPTION_SELECTOR = ".select2-results li"
-SELECT2_LOADING_SELECTOR = ".loading-results"
-
-
-class Select2Field:
-    """A select2 form field in a rendered page."""
-
-    def __init__(self, driver, index):
-        self.driver = driver
-        self.index = index
-
-    def click(self):
-        """Click the field to open its dropdown."""
-        self._retry_on_stale_element(lambda: self._get_container().click())
-
-    def get_text(self):
-        """Return the selected text of the field."""
-        return self._retry_on_stale_element(lambda: self._get_container().text)
-
-    def wait_for_options(self, timeout_secs=60):
-        """Return the options of the open dropdown once loading has finished.
-
-        select2 prepends a loading placeholder while it fetches results, which
-        must not be mistaken for a rendered option.
-        """
-
-        def options_are_loaded(driver):
-            if driver.find_elements(By.CSS_SELECTOR, SELECT2_LOADING_SELECTOR):
-                return False
-            return driver.find_elements(By.CSS_SELECTOR, SELECT2_OPTION_SELECTOR)
-
-        return WebDriverWait(self.driver, timeout_secs).until(options_are_loaded)
-
-    def click_option(self, position):
-        """Click the option at 1-based ``position`` of the open dropdown.
-
-        Return the text of the option, captured before the dropdown closes.
-        """
-
-        def click_and_get_text():
-            option = WebDriverWait(self.driver, 60).until(
-                expected_conditions.element_to_be_clickable(
-                    (
-                        By.CSS_SELECTOR,
-                        f"{SELECT2_OPTION_SELECTOR}:nth-child({position})",
-                    )
-                )
-            )
-            text = option.text
-            option.click()
-            return text
-
-        return self._retry_on_stale_element(click_and_get_text)
-
-    def _get_container(self):
-        """Return the selection container element of the field."""
-        containers = WebDriverWait(self.driver, 60).until(
-            expected_conditions.presence_of_all_elements_located(
-                (By.CSS_SELECTOR, SELECT2_CONTAINER_SELECTOR)
-            )
-        )
-        return containers[self.index]
-
-    @staticmethod
-    def _retry_on_stale_element(interaction, attempts=3):
-        """Run ``interaction``, retrying while select2 replaces the element.
-
-        django-select2 clears dependent fields by replacing their DOM nodes,
-        so elements looked up before such a change become stale.
-        """
-        for attempt in range(attempts):
-            try:
-                return interaction()
-            except StaleElementReferenceException:
-                if attempt == attempts - 1:
-                    raise
-
-
 class TestAddressChainedSelect2Widget:
     url = reverse("model_chained_select2_widget")
     form = forms.AddressChainedSelect2WidgetForm()
@@ -772,22 +791,34 @@ class TestAddressChainedSelect2Widget:
 
         # clicking city select2 lists all available cities
         city.click()
-        assert len(city.wait_for_options()) == City.objects.count()
+        assert city.wait_for_option_texts() == set(
+            City.objects.values_list("name", flat=True)
+        )
 
         # selecting a country really does it
         country.click()
-        assert country.click_option(2) == country.get_text()
+        country_name = country.click_option(2)
+        assert country_name == country.get_text()
 
         # clicking city select2 lists reduced list of cities belonging to the country
         city.click()
-        assert len(city.wait_for_options()) != City.objects.count()
+        assert city.wait_for_option_texts() == set(
+            City.objects.filter(country__name=country_name).values_list(
+                "name", flat=True
+            )
+        )
 
         # selecting a city really does it
-        assert city.click_option(2) == city.get_text()
+        city_name = city.click_option(2)
+        assert city_name == city.get_text()
 
         # clicking country select2 lists reduced list to the only country available to the city
         country.click()
-        assert len(country.wait_for_options()) != Country.objects.count()
+        assert country.wait_for_option_texts() == set(
+            Country.objects.filter(cities__name=city_name).values_list(
+                "name", flat=True
+            )
+        )
 
     @pytest.mark.selenium
     def test_dependent_fields__clear_after_parent_change(
@@ -807,11 +838,16 @@ class TestAddressChainedSelect2Widget:
 
         # change a country
         country.click()
-        assert country.click_option(3) == country.get_text()
+        country_name = country.click_option(3)
+        assert country_name == country.get_text()
 
-        # check the value in city2
+        # check that city2 is cleared and lists the cities of the new country
         city2.click()
-        city2.wait_for_options()
+        assert city2.wait_for_option_texts() == set(
+            City.objects.filter(country__name=country_name).values_list(
+                "name", flat=True
+            )
+        )
         assert city2.get_text() == ""
 
 
