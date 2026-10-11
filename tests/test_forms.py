@@ -37,6 +37,12 @@ SELECT2_OPTION_SELECTOR = ".select2-results li"
 SELECT2_LOADING_SELECTOR = ".loading-results"
 
 
+def _assert_no_js_error(driver):
+    """Fail the test if the page reported a JavaScript error."""
+    error = driver.find_element(By.XPATH, "//body[@JSError]")
+    pytest.fail(error.get_attribute("JSError"))
+
+
 class Select2Field:
     """Interact with a select2 form field in a rendered page."""
 
@@ -116,6 +122,7 @@ class Select2Field:
             except StaleElementReferenceException:
                 if attempt == attempts - 1:
                     raise
+        return None
 
 
 class TestSelect2Mixin:
@@ -178,8 +185,7 @@ class TestSelect2Mixin:
     def test_no_js_error(self, db, live_server, driver):
         driver.get(live_server + self.url)
         with pytest.raises(NoSuchElementException):
-            error = driver.find_element(By.XPATH, "//body[@JSError]")
-            pytest.fail(error.get_attribute("JSError"))
+            _assert_no_js_error(driver)
 
     @pytest.mark.selenium
     def test_selecting(self, db, live_server, driver):
@@ -191,11 +197,12 @@ class TestSelect2Mixin:
         field.click_option(1)
 
         with pytest.raises(NoSuchElementException):
-            error = driver.find_element(By.XPATH, "//body[@JSError]")
-            pytest.fail(error.get_attribute("JSError"))
+            _assert_no_js_error(driver)
 
     def test_data_url(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            ValueError, match=r'You must either specify "data_view" or "data_url"\.'
+        ):
             HeavySelect2Widget()
 
         widget = HeavySelect2Widget(data_url="/foo/bar")
@@ -398,8 +405,7 @@ class TestHeavySelect2Mixin(TestSelect2Mixin):
         search2.send_keys("fo")
 
         with pytest.raises(NoSuchElementException):
-            error = driver.find_element(By.XPATH, "//body[@JSError]")
-            pytest.fail(error.get_attribute("JSError"))
+            _assert_no_js_error(driver)
 
     def test_get_url(self):
         widget = self.widget_cls(data_view="heavy_data_1", attrs={"class": "my-class"})
@@ -500,7 +506,7 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         widget.queryset = Genre.objects.all()
         assert isinstance(widget.get_queryset(), QuerySet)
 
-    def test_result_from_instance_ModelSelect2Widget(self, genres):
+    def test_result_from_instance_model_select2_widget(self, genres):
         widget = ModelSelect2Widget()
         widget.model = Genre
         genre = Genre.objects.first()
@@ -509,36 +515,36 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
             "text": str(genre),
         }
 
-    def test_tag_attrs_Select2Widget(self):
+    def test_tag_attrs_select2_widget(self):
         widget = Select2Widget()
         output = widget.render("name", "value")
         assert 'data-minimum-input-length="0"' in output
 
-    def test_custom_tag_attrs_Select2Widget(self):
+    def test_custom_tag_attrs_select2_widget(self):
         widget = Select2Widget(attrs={"data-minimum-input-length": "3"})
         output = widget.render("name", "value")
         assert 'data-minimum-input-length="3"' in output
 
-    def test_tag_attrs_ModelSelect2Widget(self):
+    def test_tag_attrs_model_select2_widget(self):
         widget = ModelSelect2Widget(
             queryset=Genre.objects.all(), search_fields=["title__icontains"]
         )
         output = widget.render("name", "value")
         assert 'data-minimum-input-length="2"' in output
 
-    def test_tag_attrs_ModelSelect2TagWidget(self):
+    def test_tag_attrs_model_select2_tag_widget(self):
         widget = ModelSelect2TagWidget(
             queryset=Genre.objects.all(), search_fields=["title__icontains"]
         )
         output = widget.render("name", "value")
         assert 'data-minimum-input-length="2"' in output
 
-    def test_tag_attrs_HeavySelect2Widget(self):
+    def test_tag_attrs_heavy_select2_widget(self):
         widget = HeavySelect2Widget(data_url="/foo/bar/")
         output = widget.render("name", "value")
         assert 'data-minimum-input-length="2"' in output
 
-    def test_custom_tag_attrs_ModelSelect2Widget(self):
+    def test_custom_tag_attrs_model_select2_widget(self):
         widget = ModelSelect2Widget(
             queryset=Genre.objects.all(),
             search_fields=["title__icontains"],
@@ -646,7 +652,7 @@ class TestModelSelect2Mixin(TestHeavySelect2Mixin):
         url = reverse("django_select2:auto-json")
         genre = Genre.objects.last()
         response = client.get(
-            url, data=dict(field_id=widget.field_id, term=genre.title)
+            url, data={"field_id": widget.field_id, "term": genre.title}
         )
         assert response.status_code == 200, response.content
         data = json.loads(response.content.decode("utf-8"))
@@ -712,7 +718,7 @@ class TestHeavySelect2MultipleWidget:
     widget_cls = HeavySelect2MultipleWidget
 
     @pytest.mark.xfail(
-        bool(os.environ.get("CI", False)),
+        bool(os.environ.get("CI")),
         reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=1772",
     )
     @pytest.mark.selenium
@@ -723,7 +729,7 @@ class TestHeavySelect2MultipleWidget:
         )
         title = driver.find_element(By.ID, "id_title")
         title.send_keys("fo")
-        genres, fartists = driver.find_elements(
+        genres, _ = driver.find_elements(
             By.CSS_SELECTOR, ".select2-selection--multiple"
         )
         genres.click()
@@ -840,7 +846,7 @@ def widget_fixture(request):
 
 
 @pytest.mark.parametrize(
-    "locale,expected",
+    ("locale", "expected"),
     [
         ("fr-FR", "fr"),
         # Some locales with a country code are natively supported by select2's i18n

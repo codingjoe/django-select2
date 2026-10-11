@@ -16,7 +16,7 @@ class CoAuthorsWidget(s2forms.ModelSelect2MultipleWidget):
 class BookForm(forms.ModelForm):
     class Meta:
         model = models.Book
-        fields = "__all__"
+        fields = ["author", "co_authors"]
         widgets = {
             "author": AuthorWidget,
             "co_authors": CoAuthorsWidget,

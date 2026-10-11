@@ -243,6 +243,8 @@ class HeavySelect2Mixin:
         Return HeavySelect2Mixin.
 
         Args:
+            attrs (dict): HTML attributes for the widget.
+            choices (Iterable): Choices for the widget.
             data_view (str): URL pattern name
             data_url (str): URL
             dependent_fields (dict): Dictionary of dependent parent fields.
@@ -251,6 +253,7 @@ class HeavySelect2Mixin:
                 widget could be dependent on a country.
                 Key is a name of a field in a form.
                 Value is a name of a field in a model (used in `queryset`).
+            **kwargs: Additional keyword arguments, see the class attributes.
 
         """
         super().__init__(attrs, choices)
@@ -262,7 +265,8 @@ class HeavySelect2Mixin:
         if dependent_fields is not None:
             self.dependent_fields = dict(dependent_fields)
         if not (self.data_view or self.data_url):
-            raise ValueError('You must either specify "data_view" or "data_url".')
+            msg = 'You must either specify "data_view" or "data_url".'
+            raise ValueError(msg)
         self.userGetValTextFuncName = kwargs.pop("userGetValTextFuncName", "null")
 
     def get_url(self):
@@ -386,6 +390,8 @@ class ModelSelect2Mixin:
             queryset (django.db.models.query.QuerySet): QuerySet to select choices from.
             search_fields (list): List of model lookup strings.
             max_results (int): Max. JsonResponse view page size.
+            *args: Positional arguments passed to the parent class.
+            **kwargs: Additional keyword arguments passed to the parent class.
 
         """
         self.model = kwargs.pop("model", self.model)
@@ -476,20 +482,21 @@ class ModelSelect2Mixin:
         elif self.model is not None:
             queryset = self.model._default_manager.all()
         else:
-            raise NotImplementedError(
-                "%(cls)s is missing a QuerySet. Define "
-                "%(cls)s.model, %(cls)s.queryset, or override "
-                "%(cls)s.get_queryset()." % {"cls": self.__class__.__name__}
+            cls = self.__class__.__name__
+            msg = (
+                f"{cls} is missing a QuerySet. Define "
+                f"{cls}.model, {cls}.queryset, or override "
+                f"{cls}.get_queryset()."
             )
+            raise NotImplementedError(msg)
         return queryset
 
     def get_search_fields(self):
         """Return list of lookup names."""
         if self.search_fields:
             return self.search_fields
-        raise NotImplementedError(
-            '%s, must implement "search_fields".' % self.__class__.__name__
-        )
+        msg = f'{self.__class__.__name__}, must implement "search_fields".'
+        raise NotImplementedError(msg)
 
     def optgroups(self, name, value, attrs=None):
         """Return only selected options and set QuerySet from `ModelChoicesIterator`."""
@@ -505,7 +512,7 @@ class ModelSelect2Mixin:
             c for c in selected_choices if c not in self.choices.field.empty_values
         }
         field_name = self.choices.field.to_field_name or "pk"
-        query = Q(**{"%s__in" % field_name: selected_choices})
+        query = Q(**{f"{field_name}__in": selected_choices})
         for obj in self.choices.queryset.filter(query):
             option_value = self.choices.choice(obj)[0]
             option_label = self.label_from_instance(obj)
