@@ -1,9 +1,9 @@
 """Settings for Django-Select2."""
 
 from appconf import AppConf
-from django.conf import settings  # NOQA
+from django.conf import settings
 
-__all__ = ("settings", "Select2Conf")
+__all__ = ("Select2Conf", "settings")
 
 from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
 

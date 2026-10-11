@@ -90,18 +90,22 @@ class AutoResponseView(BaseListView):
         """
         field_id = self.kwargs.get("field_id", self.request.GET.get("field_id", None))
         if not field_id:
-            raise Http404('No "field_id" provided.')
+            msg = 'No "field_id" provided.'
+            raise Http404(msg)
         try:
             key = signing.loads(field_id)
         except BadSignature:
-            raise Http404('Invalid "field_id".')
+            msg = 'Invalid "field_id".'
+            raise Http404(msg)
         else:
             cache_key = f"{settings.SELECT2_CACHE_PREFIX}{key}"
             widget_dict = cache.get(cache_key)
             if widget_dict is None:
-                raise Http404("field_id not found")
+                msg = "field_id not found"
+                raise Http404(msg)
             if widget_dict.pop("url") != self.request.path:
-                raise Http404("field_id was issued for the view.")
+                msg = "field_id was issued for the view."
+                raise Http404(msg)
         qs, qs.query = widget_dict.pop("queryset")
         self.queryset = qs.all()
         widget_dict["queryset"] = self.queryset

@@ -181,7 +181,8 @@ class HeavySelect2MultipleWidgetForm(forms.Form):
 
     def clean_title(self):
         if len(self.cleaned_data["title"]) < 3:
-            raise forms.ValidationError("Title must have more than 3 characters.")
+            msg = "Title must have more than 3 characters."
+            raise forms.ValidationError(msg)
         return self.cleaned_data["title"]
 
 

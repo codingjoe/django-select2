@@ -48,10 +48,14 @@ intersphinx_mapping = {
 autodoc_default_flags = ["members", "show-inheritance"]
 autodoc_member_order = "bysource"
 
-inheritance_graph_attrs = dict(rankdir="TB")
+inheritance_graph_attrs = {"rankdir": "TB"}
 
-inheritance_node_attrs = dict(
-    shape="rect", fontsize=14, fillcolor="gray90", color="gray30", style="filled"
-)
+inheritance_node_attrs = {
+    "shape": "rect",
+    "fontsize": 14,
+    "fillcolor": "gray90",
+    "color": "gray30",
+    "style": "filled",
+}
 
-inheritance_edge_attrs = dict(penwidth=0.75)
+inheritance_edge_attrs = {"penwidth": 0.75}
