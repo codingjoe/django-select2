@@ -25,8 +25,7 @@ def random_name(n):
     return "-".join([x.capitalize() for x in words])
 
 
-# Headless argument per browser. Safari has no headless mode, so it runs
-# with a window.
+# Safari has no headless mode and runs with a window.
 HEADLESS_ARGUMENTS = {
     "Chrome": "--headless=new",
     "Firefox": "-headless",

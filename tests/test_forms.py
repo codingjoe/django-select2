@@ -38,7 +38,7 @@ SELECT2_LOADING_SELECTOR = ".loading-results"
 
 
 class Select2Field:
-    """A select2 form field in a rendered page."""
+    """Interact with a select2 form field in a rendered page."""
 
     def __init__(self, driver, index):
         self.driver = driver
@@ -53,12 +53,7 @@ class Select2Field:
         return self._retry_on_stale_element(lambda: self._get_selection().text)
 
     def wait_for_option_texts(self, timeout_secs=60):
-        """Return the texts of the options of the open dropdown.
-
-        django-select2 keeps the options of the previous query rendered until
-        the new results arrive, so callers must wait for the dropdown to finish
-        loading before they read or click an option.
-        """
+        """Return the option texts of the open dropdown, once it finished loading."""
 
         def option_texts(driver):
             options = driver.find_elements(By.CSS_SELECTOR, SELECT2_OPTION_SELECTOR)
@@ -67,11 +62,7 @@ class Select2Field:
         return self._wait_until(option_texts, timeout_secs)
 
     def click_option(self, position):
-        """Click the option at 1-based ``position`` of the open dropdown.
-
-        Wait for the dropdown to finish loading, then return the text of the
-        option, captured before the dropdown closes.
-        """
+        """Click the option at 1-based ``position`` and return its text."""
 
         def click_and_get_text():
             option = self._wait_until(
@@ -102,15 +93,10 @@ class Select2Field:
         return self._wait_until(selection_is_present)
 
     def _wait_until(self, predicate, timeout_secs=60):
-        """Return the first truthy value of ``predicate``.
-
-        Run the predicate once the open dropdown has finished loading, since
-        select2 prepends a loading placeholder while it fetches results and
-        keeps the previous options rendered until the new ones arrive. Retry
-        while elements are replaced, which invalidates held references.
-        """
+        """Return the first truthy ``predicate`` value once the dropdown loaded."""
 
         def loaded(driver):
+            # select2 keeps the previous options rendered until the query returns.
             if driver.find_elements(By.CSS_SELECTOR, SELECT2_LOADING_SELECTOR):
                 return False
             return predicate(driver)
@@ -123,11 +109,7 @@ class Select2Field:
 
     @staticmethod
     def _retry_on_stale_element(interaction, attempts=3):
-        """Run ``interaction``, retrying while select2 replaces the element.
-
-        django-select2 clears dependent fields by replacing their DOM nodes,
-        so elements looked up before such a change become stale.
-        """
+        """Run ``interaction`` again while select2 replaced the element."""
         for attempt in range(attempts):
             try:
                 return interaction()
