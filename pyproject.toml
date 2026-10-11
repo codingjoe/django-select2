@@ -1,38 +1,42 @@
 [build-system]
-requires = ["flit_core>=3.12.0", "flit_scm", "wheel"]
 build-backend = "flit_scm:buildapi"
+requires = [ "flit-core>=3.12", "flit-scm", "wheel" ]
 
 [project]
 name = "django-select2"
+readme = "README.md"
+keywords = [ "autocomplete", "Django", "select2", "typeahead" ]
+license = { file = "LICENSE" }
 authors = [
   { name = "Johannes Maron", email = "johannes@maron.family" },
 ]
-readme = "README.md"
-license = { file = "LICENSE" }
-keywords = ["Django", "select2", "autocomplete", "typeahead"]
-dynamic = ["version", "description"]
+requires-python = ">=3.14"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
-  "License :: OSI Approved :: MIT License",
-  "Intended Audience :: Developers",
   "Environment :: Web Environment",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.14",
-  "Programming Language :: Python :: 3.15",
   "Framework :: Django",
   "Framework :: Django :: 5.2",
   "Framework :: Django :: 6.0",
   "Framework :: Django :: 6.1",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Topic :: Software Development",
 ]
-requires-python = ">=3.14"
-dependencies = [
-  "django>=5.2.13",
-  "django-appconf>=1.2.0"
-]
+dynamic = [ "description", "version" ]
+dependencies = [ "django>=5.2.13", "django-appconf>=1.2" ]
+urls.Changelog = "https://github.com/codingjoe/django-select2/releases"
+urls.Documentation = "https://django-select2.rtfd.io/"
+urls.Funding = "https://github.com/sponsors/codingjoe"
+# https://packaging.python.org/en/latest/specifications/well-known-project-urls/#well-known-labels
+urls.Homepage = "https://github.com/codingjoe/django-select2"
+urls.Issues = "https://github.com/codingjoe/django-select2/issues"
+urls.Releasenotes = "https://github.com/codingjoe/django-select2/releases/latest"
+urls.Source = "https://github.com/codingjoe/django-select2"
 
 [dependency-groups]
 dev = [
@@ -46,50 +50,38 @@ test = [
   "selenium",
 ]
 docs = [
-  "sphinx",
   "furo",
+  "sphinx",
 ]
-
-[project.urls]
-# https://packaging.python.org/en/latest/specifications/well-known-project-urls/#well-known-labels
-Homepage = "https://github.com/codingjoe/django-select2"
-Changelog = "https://github.com/codingjoe/django-select2/releases"
-Source = "https://github.com/codingjoe/django-select2"
-Releasenotes = "https://github.com/codingjoe/django-select2/releases/latest"
-Documentation = "https://django-select2.rtfd.io/"
-Issues = "https://github.com/codingjoe/django-select2/issues"
-Funding = "https://github.com/sponsors/codingjoe"
-
-[tool.flit.module]
-name = "django_select2"
 
 [tool.setuptools_scm]
 write_to = "django_select2/_version.py"
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "--cov --cov-report=xml --cov-report=term --tb=short -rxs"
-testpaths = ["tests"]
-DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
-filterwarnings = ["ignore::PendingDeprecationWarning", "error::RuntimeWarning"]
-
-[tool.coverage.run]
-source = ["django_select2"]
-
-[tool.coverage.report]
-show_missing = true
-skip_covered = true
+[tool.flit]
+module.name = "django_select2"
 
 [tool.isort]
 atomic = true
 line_length = 88
 multi_line_output = 3
+use_parentheses = true
 include_trailing_comma = true
 force_grid_wrap = 0
-use_parentheses = true
-known_first_party = "django_select2, tests"
-default_section = "THIRDPARTY"
 combine_as_imports = true
+default_section = "THIRDPARTY"
+known_first_party = "django_select2, tests"
+
+[tool.pytest]
+ini_options.minversion = "6.0"
+ini_options.testpaths = [ "tests" ]
+ini_options.addopts = "--cov --cov-report=xml --cov-report=term --tb=short -rxs"
+ini_options.filterwarnings = [ "ignore::PendingDeprecationWarning", "error::RuntimeWarning" ]
+ini_options.DJANGO_SETTINGS_MODULE = "tests.testapp.settings"
+
+[tool.coverage]
+run.source = [ "django_select2" ]
+report.skip_covered = true
+report.show_missing = true
 
 [tool.pydocstyle]
 add_ignore = "D1"
