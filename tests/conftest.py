@@ -25,10 +25,20 @@ def random_name(n):
     return "-".join([x.capitalize() for x in words])
 
 
-@pytest.fixture(scope="session", params=["Chrome", "Safari", "Firefox"])
+# Safari has no headless mode and runs with a window.
+HEADLESS_ARGUMENTS = {
+    "Chrome": "--headless=new",
+    "Firefox": "-headless",
+    "Safari": None,
+}
+
+
+@pytest.fixture(scope="session", params=list(HEADLESS_ARGUMENTS))
 def driver(request):
     options = getattr(webdriver, f"{request.param}Options")()
-    options.add_argument("--headless")
+    headless_argument = HEADLESS_ARGUMENTS[request.param]
+    if headless_argument:
+        options.add_argument(headless_argument)
     try:
         b = getattr(webdriver, request.param)(options=options)
     except WebDriverException as e:
