@@ -454,7 +454,7 @@ class ModelSelect2Mixin:
 
         use_distinct |= any(
             lookup_spawns_duplicates(queryset.model._meta, search_spec)
-            for search_spec in dependent_fields.keys()
+            for search_spec in dependent_fields
         )
 
         if use_distinct:
