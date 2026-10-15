@@ -831,37 +831,22 @@ class TestAddressChainedSelect2Widget:
     @pytest.mark.selenium
     def test_dependent_fields_using_checkbox(self, db, live_server, driver, cities):
         driver.get(live_server + self.url)
-        (
-            country_container,
-            city_container,
-            city2_container,
-        ) = driver.find_elements(By.CSS_SELECTOR, ".select2-selection--single")
+        city = Select2Field(driver, 1)
 
-        # selecting a country really does it
-        city_container.click()
-        WebDriverWait(driver, 60).until(
-            expected_conditions.presence_of_element_located(
-                (By.CSS_SELECTOR, ".select2-results li")
-            )
+        # a checked checkbox passes 1 and lists all cities
+        city.click()
+        assert city.wait_for_option_texts() == set(
+            City.objects.values_list("name", flat=True)
         )
-        city_option = driver.find_element(By.CSS_SELECTOR, ".select2-results li")
-        city_name = city_option.text
-        city_option.click()
-        assert city_name == city_container.text
 
-        # check active to false
-        active_checkbox = driver.find_element(By.ID, "id_active")
-        active_checkbox.click()
+        # selecting a city really does it
+        city_name = city.click_option(1)
+        assert city_name == city.get_text()
 
-        # check the value in city
-        city_container.click()
-        WebDriverWait(driver, 60).until(
-            expected_conditions.presence_of_element_located(
-                (By.CSS_SELECTOR, ".select2-results li")
-            )
-        )
-        city_option = driver.find_element(By.CSS_SELECTOR, ".select2-results li")
-        assert city_option.text == "No results found"
+        # an unchecked checkbox passes 0 and filters out all cities
+        driver.find_element(By.ID, "id_active").click()
+        city.click()
+        assert city.wait_for_option_texts() == {"No results found"}
 
 
 @pytest.fixture(
