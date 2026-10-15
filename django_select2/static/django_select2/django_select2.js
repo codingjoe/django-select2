@@ -1,18 +1,18 @@
 /* global define, jQuery */
-((factory) => {
+;((factory) => {
   if (typeof define === "function" && define.amd) {
-    define(["jquery"], factory);
+    define(["jquery"], factory)
   } else if (typeof module === "object" && module.exports) {
-    module.exports = factory(require("jquery"));
+    module.exports = factory(require("jquery"))
   } else {
     // Browser globals
-    factory(jQuery || globalThis.django.jQuery);
+    factory(jQuery || globalThis.django.jQuery)
   }
 })(($) => {
-  "use strict";
+  "use strict"
   const init = ($element, options) => {
-    $element.select2(options);
-  };
+    $element.select2(options)
+  }
 
   function initHeavy($element, options) {
     const settings = $.extend(
@@ -23,24 +23,24 @@
               term: params.term,
               page: params.page,
               field_id: $element.data("field_id"),
-            };
-
-            let dependentFields = $element.data("select2-dependent-fields");
-            if (dependentFields) {
-              function findElement(selector) {
-                const result = $(selector, $element.closest(`:has(${selector})`));
-                if (result.length > 0) return result;
-                else return null;
-              }
-              dependentFields = dependentFields.trim().split(/\s+/);
-              $.each(dependentFields, (i, dependentField) => {
-                const nameIs = `[name=${dependentField}]`;
-                const nameEndsWith = `[name$=-${dependentField}]`;
-                result[dependentField] = (findElement(nameIs) || findElement(nameEndsWith)).val();
-              });
             }
 
-            return result;
+            let dependentFields = $element.data("select2-dependent-fields")
+            if (dependentFields) {
+              function findElement(selector) {
+                const result = $(selector, $element.closest(`:has(${selector})`))
+                if (result.length > 0) return result
+                else return null
+              }
+              dependentFields = dependentFields.trim().split(/\s+/)
+              $.each(dependentFields, (i, dependentField) => {
+                const nameIs = `[name=${dependentField}]`
+                const nameEndsWith = `[name$=-${dependentField}]`
+                result[dependentField] = (findElement(nameIs) || findElement(nameEndsWith)).val()
+              })
+            }
+
+            return result
           },
           processResults: (data, page) => {
             return {
@@ -48,42 +48,42 @@
               pagination: {
                 more: data.more,
               },
-            };
+            }
           },
         },
       },
       options,
-    );
+    )
 
-    $element.select2(settings);
+    $element.select2(settings)
   }
 
   $.fn.djangoSelect2 = function (options) {
-    const settings = $.extend({}, options);
+    const settings = $.extend({}, options)
     $.each(this, (i, element) => {
-      const $element = $(element);
+      const $element = $(element)
       if ($element.hasClass("django-select2-heavy")) {
-        initHeavy($element, settings);
+        initHeavy($element, settings)
       } else {
-        init($element, settings);
+        init($element, settings)
       }
       $element.on("select2:select", (e) => {
-        const name = $(e.currentTarget).attr("name");
+        const name = $(e.currentTarget).attr("name")
         $(`[data-select2-dependent-fields~=${name}]`).each(function () {
-          $(this).val("").trigger("change");
-        });
-      });
-    });
-    return this;
-  };
+          $(this).val("").trigger("change")
+        })
+      })
+    })
+    return this
+  }
 
   $(() => {
-    $(".django-select2").not("[name*=__prefix__]").djangoSelect2();
+    $(".django-select2").not("[name*=__prefix__]").djangoSelect2()
 
     document.addEventListener("formset:added", (event) => {
-      $(event.target).find(".django-select2").djangoSelect2();
-    });
-  });
+      $(event.target).find(".django-select2").djangoSelect2()
+    })
+  })
 
-  return $.fn.djangoSelect2;
-});
+  return $.fn.djangoSelect2
+})
