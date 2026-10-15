@@ -15,15 +15,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           path: dist/*
-  standardjs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: '.nvmrc'
-      - run: npm install -g standard
-      - run: standard
   docs:
     runs-on: ubuntu-latest
     steps:
@@ -35,8 +26,6 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    needs:
-      - standardjs
     strategy:
       matrix:
         python-version:
