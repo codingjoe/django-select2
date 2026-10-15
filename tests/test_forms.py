@@ -828,6 +828,26 @@ class TestAddressChainedSelect2Widget:
         )
         assert city2.get_text() == ""
 
+    @pytest.mark.selenium
+    def test_dependent_fields_using_checkbox(self, db, live_server, driver, cities):
+        driver.get(live_server + self.url)
+        city = Select2Field(driver, 1)
+
+        # a checked checkbox passes 1 and lists all cities
+        city.click()
+        assert city.wait_for_option_texts() == set(
+            City.objects.values_list("name", flat=True)
+        )
+
+        # selecting a city really does it
+        city_name = city.click_option(1)
+        assert city_name == city.get_text()
+
+        # an unchecked checkbox passes 0 and filters out all cities
+        driver.find_element(By.ID, "id_active").click()
+        city.click()
+        assert city.wait_for_option_texts() == {"No results found"}
+
 
 @pytest.fixture(
     name="widget",
