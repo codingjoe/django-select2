@@ -10,9 +10,6 @@
     "doc": "docs",
     "test": "tests"
   },
-  "scripts": {
-    "test": "standard"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/codingjoe/django-select2.git"
@@ -30,8 +27,5 @@
   "peerDependencies": {
     "select2": "*",
     "jquery": ">= 1.2"
-  },
-  "devDependencies": {
-    "standard": "*"
   }
 }
