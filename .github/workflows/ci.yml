@@ -40,7 +40,7 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python-version }}
-      - run: uv run --with Django~=${{ matrix.django-version }}.0 pytest -m "not selenium"
+      - run: uv run --with=pytest-github-actions-annotate-failures --with Django~=${{ matrix.django-version }}.0 pytest -m "not selenium"
       - uses: codecov/codecov-action@v7
         with:
           use_oidc: true
@@ -59,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v7
-      - run: uv run pytest -m selenium
+      - run: uv run --with=pytest-github-actions-annotate-failures pytest -m selenium
       - uses: codecov/codecov-action@v7
         with:
           use_oidc: true
